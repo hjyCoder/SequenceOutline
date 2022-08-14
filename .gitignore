@@ -1,0 +1,10 @@
+.idea
+*.iml
+**/target/
+.DS_Store
+build
+.gradle
+gradlew
+gradlew.bat
+gradle.properties.example
+/gradle

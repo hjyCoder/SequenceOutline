@@ -1,0 +1,63 @@
+<idea-plugin>
+    <id>SequenceOutline</id>
+    <name>SequenceOutline</name>
+    <vendor email="mydeyouxiang2@sina.cn" url="https://github.com/hjyCoder">hjyCoder</vendor>
+
+    <description><![CDATA[
+    <div>
+        A simple and open source sequence plugin
+    </div>
+    <div style="white-space:normal; word-break:break-all; width:100%">
+        <ul>
+            <li>Traverse the code according to the configuration to generate the call tree</li>
+            <li>Display the call tree according to the configuration</li>
+            <li>Call tree convert to sequence diagram</li>
+            <li>Support JSON operation Expand\Minify\Sort\Verify JSON</li>
+            <li>Filter JSON according to jsonpath, jsonpath expressions</li>
+            <li>Support JSON compare</li>
+        </ul>
+    </div>
+    <br>
+    If you have any suggestions, questions or bugs about this plugin,
+    please issue them on <a href="https://github.com/hjyCoder/SequenceOutline">Github</a>,
+    and if you like this plugin, just click the star on <a href="https://github.com/hjyCoder/SequenceOutline">Github</a> to show your support.
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.lang</depends>
+
+
+    <application-components>
+    </application-components>
+
+    <project-components>
+    </project-components>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="SequenceOutline" anchor="left"
+                    factoryClass="com.muy.view.window.SequenceOutlineWindowFactory" order="last"
+                    doNotActivateOnStart="false" icon="/icons/SequenceOutline.png"/>
+        <projectService serviceImplementation="com.muy.view.component.SequenceOutlineComponent"/>
+
+        <projectService serviceInterface="com.muy.view.window.sequence.configuration.SequenceConfiguration"
+                        serviceImplementation="com.muy.view.window.sequence.configuration.SequenceConfiguration"/>
+        <projectService serviceInterface="com.muy.view.window.redis.configuration.RedisConfiguration"
+                        serviceImplementation="com.muy.view.window.redis.configuration.RedisConfiguration"/>
+        
+        <projectService serviceInterface="com.muy.message.Notifier" serviceImplementation="com.muy.message.Notifier" />
+
+    </extensions>
+
+    <actions>
+        
+    </actions>
+
+
+
+</idea-plugin>
