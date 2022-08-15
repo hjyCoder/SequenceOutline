@@ -14,7 +14,7 @@ import javax.swing.*;
  */
 public class PanelCompare extends JSplitPane {
 
-    private static final double WINDOW_WEIGHT = 0.5D;
+    private static final double WINDOW_WEIGHT = 0.9D;
 
     private Project project;
 

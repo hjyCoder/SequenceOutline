@@ -40,22 +40,34 @@
     </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="SequenceOutline" anchor="left"
+        <toolWindow id="SequenceOutline" anchor="bottom"
                     factoryClass="com.muy.view.window.SequenceOutlineWindowFactory" order="last"
                     doNotActivateOnStart="false" icon="/icons/SequenceOutline.png"/>
         <projectService serviceImplementation="com.muy.view.component.SequenceOutlineComponent"/>
 
         <projectService serviceInterface="com.muy.view.window.sequence.configuration.SequenceConfiguration"
                         serviceImplementation="com.muy.view.window.sequence.configuration.SequenceConfiguration"/>
-        <projectService serviceInterface="com.muy.view.window.redis.configuration.RedisConfiguration"
-                        serviceImplementation="com.muy.view.window.redis.configuration.RedisConfiguration"/>
-        
-        <projectService serviceInterface="com.muy.message.Notifier" serviceImplementation="com.muy.message.Notifier" />
 
     </extensions>
 
     <actions>
-        
+        <!-- SequenceOutline -->
+        <group id="Plugin.SequenceOutline" text="SequenceOutline" description="SequenceOutline"
+               popup="true"
+               icon="/icons/SequenceOutline.png">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+
+            <group id="Reflect.Group.Main" text="Reflect Manipulation"
+                   description="Group of reflect"
+                   popup="true"
+                   icon="fileTypes/json.svg">
+                <action id="com.muy.action.JavaMethodIdentityAction"
+                        class="com.muy.action.JavaMethodIdentityAction" text="JavaMethodIdentity" description="JavaMethodIdentity"/>
+            </group>
+
+        </group>
+
+        <!-- SequenceOutline -->
     </actions>
 
 

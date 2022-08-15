@@ -38,10 +38,4 @@ public class ReflectStringUtils {
         simpleClassName = classSimpleName(simpleClassName);
         return simpleClassName.substring(0, 1).toLowerCase() + simpleClassName.substring(1, simpleClassName.length());
     }
-
-    public static void main(String[] args) {
-        System.out.println(ReflectStringUtils.packageName("top.idwangmo.axondemo.service.A"));
-        System.out.println(ReflectStringUtils.packageName("A"));
-        System.out.println(ReflectStringUtils.packageName("java.util.List<org.axonframework.commandhandling.gateway.CommandGateway<>>"));
-    }
 }

@@ -196,7 +196,7 @@ public class MTTreeCellSequenceEntrance implements MTTreeCell {
         if(null == treeInvokeModel || null == treeInvokeModel.getTreeNodeModel()){
             return null;
         }
-        TreeInvokeTreeCell treeInvokeTreeCell = new TreeInvokeTreeCell(project, treeInvokeModel.getTreeNodeModel());
+        TreeInvokeTreeCell treeInvokeTreeCell = new TreeInvokeTreeCell(project, treeInvokeModel.getTreeNodeModel(), treeInvokeModel);
         return treeInvokeTreeCell;
     }
 }

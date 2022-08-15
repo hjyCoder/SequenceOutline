@@ -38,7 +38,7 @@ public abstract class AbstractMTTreeCellAction extends AnAction implements DumbA
             }
             SequenceOutlineNotifier.notify("error");
         } catch (Exception ex) {
-            SequenceOutlineNotifier.notify(ex.getMessage());
+            SequenceOutlineNotifier.notify(String.format("%s, msg = %s", ex.getClass(), ex.getMessage()));
         }
     }
 

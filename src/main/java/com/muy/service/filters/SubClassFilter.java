@@ -29,9 +29,6 @@ public class SubClassFilter implements MethodFilter {
             return true;
         }
         boolean inheritor = SequenceOutlinePsiUtils.isInheritor(psiMethod.getContainingClass().getQualifiedName(), _className, project);
-        if (inheritor) {
-            System.out.println("find");
-        }
         return false;
     }
 }

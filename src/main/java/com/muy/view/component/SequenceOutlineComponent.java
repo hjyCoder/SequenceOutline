@@ -2,6 +2,7 @@ package com.muy.view.component;
 
 import com.google.common.collect.Maps;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
@@ -17,6 +18,8 @@ import java.util.Map;
  * @Date 2022/8/7 13:50
  */
 public class SequenceOutlineComponent implements ContentManagerListener {
+
+    private static final Logger LOGGER = Logger.getInstance(SequenceOutlineComponent.class);
 
     private Project project;
 
@@ -91,8 +94,7 @@ public class SequenceOutlineComponent implements ContentManagerListener {
             content.setCloseable(false);
             return content;
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("content: " + ex);
+            LOGGER.error(String.format("createRestClientContentPanel"), ex);
             return null;
         }
     }
@@ -119,7 +121,7 @@ public class SequenceOutlineComponent implements ContentManagerListener {
         if (null != classNameMap) {
             T t = (T) classNameMap.get(clazz.getName());
             if (null == t) {
-                System.out.println(clazz.getName());
+                LOGGER.error(String.format("findInstance Object not init"));
                 throw new RuntimeException("对象未初始化");
             }
             return t;

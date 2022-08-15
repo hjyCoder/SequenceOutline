@@ -47,9 +47,10 @@ public class TreeInvokeTreeCell implements MTTreeCell<TreeInvokeTreeCell> {
 
     private TreeRightPanelJson treeRightPanelJson;
 
-    public TreeInvokeTreeCell(Project project, TreeNodeModel treeNodeModel) {
+    public TreeInvokeTreeCell(Project project, TreeNodeModel treeNodeModel, TreeInvokeModel treeInvokeModel) {
         this.project = project;
         this.treeNodeModel = treeNodeModel;
+        this.treeInvokeModel = treeInvokeModel;
     }
 
     @Override

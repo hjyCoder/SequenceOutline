@@ -17,8 +17,6 @@ import java.util.List;
  */
 public class SequenceOutlineWindowFactory implements ToolWindowFactory {
 
-    public static final String TOOL_ID = "SequenceOutline";
-    public static ToolWindow toolWindow;
     public static Project project;
 
     @Override

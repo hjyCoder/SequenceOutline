@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SequenceGenerator extends JavaRecursiveElementVisitor {
 
-    private static final Logger LOGGER = Logger.getInstance(SequenceGenerator.class.getName());
+    private static final Logger LOGGER = Logger.getInstance(SequenceGenerator.class);
 
 //    private final Stack<Integer> offsetStack = new Stack<>();
 

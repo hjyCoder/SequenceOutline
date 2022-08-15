@@ -1,20 +1,14 @@
 package com.muy.view.component;
 
-import com.intellij.lang.Language;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
 import com.muy.common.actions.toolbaractions.AddTabAction;
 import com.muy.common.actions.toolbaractions.CloseTabAction;
-import com.muy.view.window.SequenceOutlineWindowFactory;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 
@@ -23,6 +17,8 @@ import javax.swing.*;
  * @Date 2022/8/7 13:50
  */
 public abstract class AbstractSequenceOutlineSetTab extends SimpleToolWindowPanel implements SequenceOutlineSetTab {
+
+    private static final Logger LOGGER = Logger.getInstance(AbstractSequenceOutlineSetTab.class);
 
     protected Project project;
 
@@ -44,26 +40,6 @@ public abstract class AbstractSequenceOutlineSetTab extends SimpleToolWindowPane
     @Override
     public JPanel panelShow() {
         return this;
-    }
-
-    /**
-     * create editor with specified language and content
-     */
-    protected FileEditor createEditor(String languageId, String text, Project project) {
-        if (StringUtils.isEmpty(text)) {
-            text = "";
-        }
-        try{
-            Language language = Language.findLanguageByID(languageId);
-            System.out.println("projectShow:" + SequenceOutlineWindowFactory.project);
-            PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText(language, text);
-            FileEditor editor = TextEditorProvider.getInstance().createEditor(project, psiFile.getVirtualFile());
-            return editor;
-        }catch(Exception ex){
-            System.out.println("ex" + ex);
-            return null;
-        }
-
     }
 
     public void setProject(Project project) {

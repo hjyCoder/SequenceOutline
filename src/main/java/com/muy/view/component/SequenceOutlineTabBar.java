@@ -45,7 +45,6 @@ public class SequenceOutlineTabBar extends JBEditorTabs implements TabsListener 
 
     @Override
     public void selectionChanged(TabInfo oldSelection, TabInfo newSelection) {
-        System.out.println(" tabChange -->" + newSelection.getText());
         SequenceOutlineComponent.getInstance(project);
     }
 

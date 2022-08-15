@@ -14,13 +14,25 @@ import java.util.List;
 public abstract class ProjectConfiguration<T extends ProjectConfiguration, U> implements PersistentStateComponent<T> {
 
 
+    /**
+     * 存储的对象必须有GET\SET方法
+     * @return
+     */
     public abstract List<U> getEntrances();
 
+    /**
+     * 获取配置对象
+     * @return
+     */
     @Override
     public @Nullable T getState() {
         return (T) this;
     }
 
+    /**
+     * 加载配置对象
+     * @param t
+     */
     @Override
     public void loadState(@NotNull T t) {
         XmlSerializerUtil.copyBean(t, this);

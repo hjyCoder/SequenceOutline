@@ -25,7 +25,6 @@ public class MRSearchTextField extends SearchTextField {
             return result;
         }
         if(e.getKeyCode() == KeyEvent.VK_ENTER){
-            System.out.println("handler key enter");
             e.consume();
             getHistory();
             addCurrentTextToHistory();

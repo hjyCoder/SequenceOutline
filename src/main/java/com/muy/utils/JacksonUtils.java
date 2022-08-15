@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,9 @@ import java.util.function.Supplier;
  * @Date 2022/4/6 4:10 PM
  */
 public class JacksonUtils {
+
+    private static final Logger LOGGER = Logger.getInstance(JacksonUtils.class);
+
     private static ObjectMapper mapper;
 
     /**
@@ -156,7 +160,7 @@ public class JacksonUtils {
             }
             return mapper.writeValueAsString(obj);
         } catch (Throwable e) {
-//            log.error(String.format("toJSONString %s", obj != null ? obj.toString() : "null"), e);
+            LOGGER.error(String.format("toJSONString %s", obj != null ? obj.toString() : "null"), e);
         }
         return "";
     }
@@ -193,7 +197,7 @@ public class JacksonUtils {
             }
             return mapper.writeValueAsString(obj);
         } catch (Throwable e) {
-//            log.error(String.format("toJSONString %s", obj != null ? obj.toString() : "null"), e);
+            LOGGER.error(String.format("toJSONString %s", obj != null ? obj.toString() : "null"), e);
         }
         return defaultSupplier.get();
     }
@@ -220,7 +224,7 @@ public class JacksonUtils {
             }
             return mapperWithNull.writeValueAsString(obj);
         } catch (Throwable e) {
-//            log.error(String.format("toJSONString %s", obj != null ? obj.toString() : "null"), e);
+            LOGGER.error(String.format("toJSONString %s", obj != null ? obj.toString() : "null"), e);
         }
         return defaultSupplier.get();
     }
@@ -269,7 +273,7 @@ public class JacksonUtils {
             }
             return mapper.readValue(value, tClass);
         } catch (Throwable e) {
-//            log.error(String.format("toJavaObject exception: \n %s\n %s", value, tClass), e);
+            LOGGER.error(String.format("toJavaObject value = %s, tClass = %s", value, tClass), e);
         }
         return defaultSupplier.get();
     }
@@ -309,8 +313,7 @@ public class JacksonUtils {
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, tClass);
             return mapper.readValue(value, javaType);
         } catch (Throwable e) {
-//            log.error(String.format("toJavaObjectList exception \n%s\n%s", value, tClass), e);
-            System.out.println("erro");
+            LOGGER.error(String.format("toJavaObjectList exception \n%s\n%s", value, tClass), e);
         }
         return defaultSupplier.get();
     }
@@ -332,7 +335,7 @@ public class JacksonUtils {
             }
             return mapper.readValue(value, typeReference);
         } catch (Throwable e) {
-            e.printStackTrace();
+            LOGGER.error(String.format("toJavaObjectListTypeRefer value = %s, typeReference = %s", value, typeReference), e);
         }
         return defaultSupplier.get();
     }
@@ -351,7 +354,7 @@ public class JacksonUtils {
             }
             return mapper.readValue(value, javaType);
         } catch (Throwable e) {
-            e.printStackTrace();
+            LOGGER.error(String.format("toJavaObjectListJavaType value = %s, javaType = %s", value, javaType), e);
             return defaultSupplier.get();
         }
     }
@@ -375,7 +378,7 @@ public class JacksonUtils {
             }
             return mapper.readValue(value, javaType(appendList(javaTypeCanonical)));
         } catch (Throwable e) {
-            e.printStackTrace();
+            LOGGER.error(String.format("toJavaObjectList value = %s, javaTypeCanonical = %s", value, javaTypeCanonical), e);
         }
         return defaultSupplier.get();
     }
@@ -395,7 +398,7 @@ public class JacksonUtils {
             }
             return mapper.readValue(value, javaType(appendList(javaTypeCanonical)));
         } catch (Throwable e) {
-            e.printStackTrace();
+            LOGGER.error(String.format("toJavaObjectList value = %s, javaTypeCanonical = %s", value, javaTypeCanonical), e);
             return Lists.newArrayList();
         }
     }
@@ -435,7 +438,7 @@ public class JacksonUtils {
                 return (Map<String, Object>) value;
             }
         } catch (Exception e) {
-//            log.info("fail to convert" + toJSONString(value), e);
+            LOGGER.error(String.format("toMap value = %s", value), e);
         }
         return toMap(toJSONString(value), defaultSupplier);
     }
@@ -452,7 +455,7 @@ public class JacksonUtils {
         try {
             return toJavaObject(value, LinkedHashMap.class);
         } catch (Exception e) {
-//            log.error(String.format("toMap exception\n%s", value), e);
+            LOGGER.error(String.format("toMap value = %s", value), e);
         }
         return defaultSupplier.get();
     }
@@ -485,7 +488,7 @@ public class JacksonUtils {
         try {
             return toJavaObject(value, List.class);
         } catch (Exception e) {
-//            log.error("toList exception\n" + value, e);
+            LOGGER.error(String.format("toList value = %s", value), e);
         }
         return defaultSuppler.get();
     }
@@ -586,7 +589,7 @@ public class JacksonUtils {
             JsonNode jsonNode = mapper.readTree(jsonStr);
             return jsonNode;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error(String.format("toJsonNodeIgnoreEX jsonStr = %s", jsonStr), ex);
             return null;
         }
     }
@@ -684,7 +687,7 @@ public class JacksonUtils {
             });
             return null;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error(String.format("convertJsonPairList jsonStr = %s, appendMap = %s", jsonStr, appendMap), ex);
             return Maps.newHashMap();
         }
     }

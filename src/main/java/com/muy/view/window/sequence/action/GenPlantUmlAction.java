@@ -1,6 +1,7 @@
 package com.muy.view.window.sequence.action;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.testFramework.LightVirtualFile;
 import com.muy.common.tree.MTTreeCell;
@@ -20,6 +21,8 @@ import java.awt.datatransfer.StringSelection;
  * @Date 2022/8/7 13:50
  */
 public class GenPlantUmlAction extends AbstractMTTreeCellSelectTreeAction {
+
+    Logger LOGGER = Logger.getInstance(GenPlantUmlAction.class);
 
     public GenPlantUmlAction(TreePanelMark treePanelMark) {
         super("GenPlantUml", "GenPlantUml", AllIcons.General.Remove, treePanelMark);
@@ -46,10 +49,8 @@ public class GenPlantUmlAction extends AbstractMTTreeCellSelectTreeAction {
             StringSelection selection = new StringSelection(pumlContent);
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(selection, selection);
-//        fileEditorManager.setSelectedEditor(sourceVirtualFile, "");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("----> open file ex ---> " + ex.getMessage());
+            LOGGER.error(String.format("GenPlantUml error"), ex);
         }
     }
 }
