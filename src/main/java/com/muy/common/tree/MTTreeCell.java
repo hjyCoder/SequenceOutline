@@ -10,6 +10,7 @@ import com.intellij.ui.SimpleTextAttributes;
 import com.muy.common.tree.enums.AddSubTreeNodeType;
 import com.muy.utils.ActionUtil;
 import com.muy.utils.ClipboardUtils;
+import com.muy.utils.MRListUtils;
 import com.muy.utils.TreeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -328,6 +329,7 @@ public interface MTTreeCell<T extends MTTreeCell> {
                 DefaultMutableTreeNode parentChildT = (DefaultMutableTreeNode) nodeParent.getChildAt(i);
                 if (nodeCurrent.equals(parentChildT)) {
                     parentChilds.addAll(currentChilds);
+                    continue;
                 }
                 parentChilds.add(parentChildT);
             }
@@ -350,5 +352,51 @@ public interface MTTreeCell<T extends MTTreeCell> {
         if (CollectionUtils.isNotEmpty(subs)) {
             subs.clear();
         }
+    }
+
+    public default void moveUp(DefaultMutableTreeNode nodeParent, DefaultMutableTreeNode nodeCurrent, MTTreeCell cellParent, int pos) {
+        if (CollectionUtils.isNotEmpty(cellParent.subTreeCell())) {
+            MRListUtils.swrap(cellParent.subTreeCell(), pos - 1, pos);
+        }
+    }
+
+    public default boolean canMoveUp(DefaultMutableTreeNode mutableTreeNode) {
+        DefaultMutableTreeNode parent = (DefaultMutableTreeNode) mutableTreeNode.getParent();
+        if (null == parent) {
+            return false;
+        }
+
+        if (parent.getChildCount() <= 1) {
+            return false;
+        }
+
+        if (parent.getFirstChild().equals(mutableTreeNode)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public default void moveDown(DefaultMutableTreeNode nodeParent, DefaultMutableTreeNode nodeCurrent, MTTreeCell cellParent, int pos) {
+        if (CollectionUtils.isNotEmpty(cellParent.subTreeCell())) {
+            MRListUtils.swrap(cellParent.subTreeCell(), pos, pos + 1);
+        }
+    }
+
+    public default boolean canMoveDown(DefaultMutableTreeNode mutableTreeNode) {
+        DefaultMutableTreeNode parent = (DefaultMutableTreeNode) mutableTreeNode.getParent();
+        if (null == parent) {
+            return false;
+        }
+
+        if (parent.getChildCount() <= 1) {
+            return false;
+        }
+
+        if (parent.getLastChild().equals(mutableTreeNode)) {
+            return false;
+        }
+
+        return true;
     }
 }

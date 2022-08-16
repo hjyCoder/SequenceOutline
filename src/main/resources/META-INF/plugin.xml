@@ -42,7 +42,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="SequenceOutline" anchor="bottom"
                     factoryClass="com.muy.view.window.SequenceOutlineWindowFactory" order="last"
-                    doNotActivateOnStart="false" icon="/icons/SequenceOutline.png"/>
+                    doNotActivateOnStart="false" icon="/icons/SequenceOutlineWindow.svg"/>
         <projectService serviceImplementation="com.muy.view.component.SequenceOutlineComponent"/>
 
         <projectService serviceInterface="com.muy.view.window.sequence.configuration.SequenceConfiguration"

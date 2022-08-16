@@ -1,10 +1,10 @@
 package com.muy.domain.bean.invoketree;
 
 
-import com.intellij.psi.PsiAnonymousClass;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.muy.common.tree.enums.MethodType;
+import com.muy.constant.SequenceConstant;
 import com.muy.utils.MethodDescUtils;
 import com.muy.utils.SequenceOutlinePsiUtils;
 import lombok.Data;
@@ -72,7 +72,6 @@ public class TreeNodeModel implements Serializable, Cloneable {
             fClassName = psiClass.getQualifiedName() + "$";
         }else{
             methodType(treeNodeModel, psiMethod);
-            treeNodeModel.setMethodType(psiMethod.getContainingClass().isInterface() ? MethodType.INTERFACE_METHOD.getType() : MethodType.ABSTRACT_METHOD.getType());
             fClassName = psiMethod.getContainingClass().getQualifiedName();
         }
         int pos = fClassName.lastIndexOf(".");
@@ -90,6 +89,39 @@ public class TreeNodeModel implements Serializable, Cloneable {
         return treeNodeModel;
     }
 
+    public static TreeNodeModel ofLambda(PsiLambdaExpression expression){
+        TreeNodeModel treeNodeModel = new TreeNodeModel();
+        treeNodeModel.setScheme("lambda");
+        String fClassName;
+        PsiMethod psiMethod = SequenceOutlinePsiUtils.findEnclosedPsiMethod(expression);
+        if(psiMethod.getContainingClass() instanceof PsiAnonymousClass){
+            PsiClass psiClass = SequenceOutlinePsiUtils.findPsiClass(psiMethod.getContainingClass());
+            fClassName = psiClass.getQualifiedName() + "$";
+        }else{
+            methodType(treeNodeModel, psiMethod);
+            fClassName = psiMethod.getContainingClass().getQualifiedName();
+        }
+        int pos = fClassName.lastIndexOf(".");
+        if (pos <= 0) {
+            treeNodeModel.setClassName(fClassName);
+            treeNodeModel.setPackageName("");
+        } else {
+            treeNodeModel.setClassName(fClassName.substring(pos + 1));
+            treeNodeModel.setPackageName(fClassName.substring(0, pos));
+        }
+        String functionName = "";
+        PsiType functionNameType = expression.getFunctionalInterfaceType();
+        if(null != functionNameType && functionNameType instanceof PsiClassReferenceType){
+            PsiClassReferenceType functionNameClass = (PsiClassReferenceType)functionNameType;
+            functionName = "[" + functionNameClass.getClassName() + "]";
+        }
+        treeNodeModel.setMethodName(psiMethod.getName() + "_" + functionName + SequenceConstant.Lambda_Invoke);
+        treeNodeModel.setMethodSignature(MethodDescUtils.getMethodDescriptor(expression));
+        treeNodeModel.setMethodType(MethodType.LAMBDA_METHOD.getType());
+        String uriMd5 = treeNodeModel.uriMd5Gen();
+        return treeNodeModel;
+    }
+
     private static void methodType(TreeNodeModel treeNodeModel, PsiMethod psiMethod){
         if(psiMethod.getContainingClass().isInterface()){
             treeNodeModel.setMethodType(MethodType.INTERFACE_METHOD.getType());
@@ -100,5 +132,18 @@ public class TreeNodeModel implements Serializable, Cloneable {
 
     public String fClassName(){
         return packageName + "." + className;
+    }
+
+    public static boolean jsonConvertCheck(TreeNodeModel treeNodeModel) {
+        if (null == treeNodeModel) {
+            return false;
+        }
+
+        if (StringUtils.isBlank(treeNodeModel.getClassName())
+                || StringUtils.isBlank(treeNodeModel.getMethodName())
+                || StringUtils.isBlank(treeNodeModel.getMethodSignature())) {
+            return false;
+        }
+        return true;
     }
 }

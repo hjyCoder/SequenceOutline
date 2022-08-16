@@ -31,6 +31,6 @@ public class DeleteCurrentAndChildTreeNodeAction extends AbstractMTTreeCellSelec
         MTTreeCell parentCell = (MTTreeCell) parent.getUserObject();
         mtTreeCell.removeAllChildrenTreeNode(mutableTreeNode);
         mtTreeCell.removeCurrentTreeNode(parent, mutableTreeNode, parentCell);
-        JTreeUtils.reload(treePanelMark.jTree(), mutableTreeNode);
+        JTreeUtils.reload(treePanelMark.jTree(), parent);
     }
 }

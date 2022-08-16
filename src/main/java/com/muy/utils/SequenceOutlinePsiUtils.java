@@ -320,4 +320,12 @@ public class SequenceOutlinePsiUtils {
         }
         return false;
     }
+
+    public static PsiMethod findEnclosedPsiMethod(PsiLambdaExpression expression) {
+        PsiElement parent = expression.getParent();
+        while (!(parent instanceof PsiMethod)) {
+            parent = parent.getParent();
+        }
+        return (PsiMethod) parent;
+    }
 }

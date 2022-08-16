@@ -16,6 +16,7 @@ public enum MethodType {
     NORMAL_METHOD(2, "普通类方法", AllIcons.Nodes.Class),
     ANONYMOUS_CLASS_METHOD(3, "匿名类方法", AllIcons.Nodes.AnonymousClass),
     RECURSIVE_METHOD(4, "递归调用方法", AllIcons.Gutter.RecursiveMethod),
+    LAMBDA_METHOD(5, "Lambda方法", AllIcons.Nodes.Lambda),
     ;
 
     @Getter

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.intellij.openapi.project.Project;
 import com.muy.common.tree.MTTreeCell;
 import com.muy.common.tree.TreePanelMark;
+import com.muy.common.utils.CheckJsonValidUtils;
 import com.muy.view.window.sequence.bean.TreeNodeModelSequence;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -27,10 +28,7 @@ public class MTTreeCellSequenceRoot implements MTTreeCell {
 
     @Override
     public DefaultMutableTreeNode buildSubTreeNode(String jsonStr, TreePanelMark treePanelMark) {
-        TreeNodeModelSequence treeNodeModel = JSON.parseObject(jsonStr, TreeNodeModelSequence.class);
-        if(null == treeNodeModel){
-            throw new RuntimeException("InvalidJson");
-        }
+        TreeNodeModelSequence treeNodeModel = CheckJsonValidUtils.toJavaObject(jsonStr, TreeNodeModelSequence.class, TreeNodeModelSequence::jsonConvertValid);
         MTTreeCellSequenceEntrance sequenceEntrance = new MTTreeCellSequenceEntrance(project, treeNodeModel);
         DefaultMutableTreeNode sequenceTreeNode = new DefaultMutableTreeNode(sequenceEntrance);
         return sequenceTreeNode;

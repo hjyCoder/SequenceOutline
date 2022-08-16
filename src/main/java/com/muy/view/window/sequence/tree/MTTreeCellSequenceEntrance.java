@@ -66,12 +66,12 @@ public class MTTreeCellSequenceEntrance implements MTTreeCell {
 
     @Override
     public Icon iconSelected() {
-        return AllIcons.Nodes.Lambda;
+        return GuiUtils.SEQUENCE_OUTLINE;
     }
 
     @Override
     public Icon iconUnselected() {
-        return AllIcons.Nodes.Lambda;
+        return GuiUtils.SEQUENCE_OUTLINE;
     }
 
     @Override
@@ -190,6 +190,22 @@ public class MTTreeCellSequenceEntrance implements MTTreeCell {
         } else {
             throw new RuntimeException("Invalid Json");
         }
+    }
+
+    @Override
+    public void removeCurrentTreeNode(DefaultMutableTreeNode nodeParent, DefaultMutableTreeNode nodeCurrent, MTTreeCell cellParent) {
+        SequenceConfiguration sequenceConfiguration = SequenceConfiguration.getInstance(project);
+        sequenceConfiguration.removeData(treeNodeModelSequence);
+        MTTreeCell.super.removeCurrentTreeNode(nodeParent, nodeCurrent, cellParent);
+
+    }
+
+    @Override
+    public void removeAllChildrenTreeNode(DefaultMutableTreeNode nodeCurrent) {
+        SequenceConfiguration sequenceConfiguration = SequenceConfiguration.getInstance(project);
+        treeNodeModelSequence.setRoot(null);
+        nodeCurrent.removeAllChildren();
+        MTTreeCell.super.removeAllChildrenTreeNode(nodeCurrent);
     }
 
     private TreeInvokeTreeCell convertTo(TreeInvokeModel treeInvokeModel){

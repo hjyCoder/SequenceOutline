@@ -23,7 +23,7 @@ public class SequenceParams {
 
     public static SequenceParams convertToSequenceParams(FilterConfig filterConfig, PsiMethod entrance){
         SequenceParams sequenceParams = new SequenceParams();
-        sequenceParams.setMaxDepth(filterConfig.getCallDepth());
+        sequenceParams.setMaxDepth(null == filterConfig.getCallDepth() ? 100 : filterConfig.getCallDepth());
         CompositeMethodFilter methodFilter = sequenceParams.getMethodFilter();
         methodFilter.setEntrance(entrance);
         methodFilter.addFilter(new FilterGetMethod(filterConfig.getNotGet(), filterConfig.getAllowGet()));

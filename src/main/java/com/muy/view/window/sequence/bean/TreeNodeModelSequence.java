@@ -54,4 +54,11 @@ public class TreeNodeModelSequence extends TreeNodeModel {
         }
         return true;
     }
+
+    public static boolean jsonConvertValid(TreeNodeModelSequence sequence) {
+        if (null == sequence) {
+            return false;
+        }
+        return true;
+    }
 }

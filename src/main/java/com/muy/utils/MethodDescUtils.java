@@ -96,6 +96,25 @@ public class MethodDescUtils {
         return buf.toString();
     }
 
+    /**
+     * Returns the descriptor corresponding to the given method.
+     *
+     * @param m a {@link Method Method} object.
+     * @return the descriptor of the given method.
+     */
+    // public
+    public static String getMethodDescriptor(final PsiLambdaExpression expression) {
+        PsiParameter[] parameters = expression.getParameterList().getParameters();
+        StringBuilder buf = new StringBuilder();
+        buf.append('(');
+        for (final PsiParameter parameter : parameters) {
+            getDescriptor(buf, parameter.getType());
+        }
+        buf.append(')');
+        getDescriptor(buf, expression.getFunctionalInterfaceType());
+        return buf.toString();
+    }
+
     public static void getDescriptor(final StringBuilder buf, final PsiType psiType) {
         PsiType d = psiType;
         while (true) {

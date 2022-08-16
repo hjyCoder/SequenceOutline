@@ -6,13 +6,13 @@ import com.intellij.openapi.project.Project;
 import com.muy.common.tree.MTTreeCell;
 import com.muy.common.tree.TreePanelMark;
 import com.muy.common.tree.TreeRightPanelJson;
-import com.muy.common.tree.actions.DeleteAllChildTreeNodeAction;
-import com.muy.common.tree.actions.DeleteCurrentAndChildTreeNodeAction;
-import com.muy.common.tree.actions.DeleteCurrentTreeNodeAction;
+import com.muy.common.tree.actions.*;
 import com.muy.common.tree.enums.MethodType;
+import com.muy.common.utils.CheckJsonValidUtils;
 import com.muy.domain.bean.invoketree.TreeInvokeModel;
 import com.muy.domain.bean.invoketree.TreeNodeModel;
 import com.muy.utils.GoToSourceUtils;
+import com.muy.utils.MRListUtils;
 import com.muy.utils.TreeUtils;
 import com.muy.view.component.TabContentRightShow;
 import com.muy.view.component.SequenceOutlineComponent;
@@ -78,6 +78,12 @@ public class TreeInvokeTreeCell implements MTTreeCell<TreeInvokeTreeCell> {
         defaultActionGroup.add(new DeleteAllChildTreeNodeAction(treePanelMark));
         defaultActionGroup.add(new DeleteCurrentTreeNodeAction(treePanelMark));
         defaultActionGroup.add(new DeleteCurrentAndChildTreeNodeAction(treePanelMark));
+        if(canMoveUp(mutableTreeNode)){
+            defaultActionGroup.add(new MoveUpAction(treePanelMark));
+        }
+        if(canMoveDown(mutableTreeNode)){
+            defaultActionGroup.add(new MoveDownAction(treePanelMark));
+        }
         return defaultActionGroup;
     }
 
@@ -92,11 +98,30 @@ public class TreeInvokeTreeCell implements MTTreeCell<TreeInvokeTreeCell> {
         if (cellParent instanceof MTTreeCellSequenceEntrance) {
             MTTreeCellSequenceEntrance entrance = (MTTreeCellSequenceEntrance) cellParent;
             entrance.getTreeNodeModelSequence().setRoot(null);
+            nodeParent.removeAllChildren();
         } else if (cellParent instanceof TreeInvokeTreeCell) {
             TreeInvokeTreeCell parentNode = (TreeInvokeTreeCell) cellParent;
             TreeUtils.removeCurrentNode(treeInvokeModel, parentNode.getTreeInvokeModel(), TreeInvokeModel::getSubInvoke);
+            MTTreeCell.super.removeCurrentTreeNode(nodeParent, nodeCurrent, cellParent);
         }
-        MTTreeCell.super.removeCurrentTreeNode(nodeParent, nodeCurrent, cellParent);
+    }
+
+    @Override
+    public void moveUp(DefaultMutableTreeNode nodeParent, DefaultMutableTreeNode nodeCurrent, MTTreeCell cellParent, int pos) {
+        if (cellParent instanceof TreeInvokeTreeCell) {
+            TreeInvokeTreeCell parentInvoke = (TreeInvokeTreeCell) cellParent;
+            MRListUtils.swrap(parentInvoke.getTreeInvokeModel().getSubInvoke(), pos - 1, pos);
+        }
+        MTTreeCell.super.moveUp(nodeParent, nodeCurrent, cellParent, pos);
+    }
+
+    @Override
+    public void moveDown(DefaultMutableTreeNode nodeParent, DefaultMutableTreeNode nodeCurrent, MTTreeCell cellParent, int pos) {
+        if (cellParent instanceof TreeInvokeTreeCell) {
+            TreeInvokeTreeCell parentInvoke = (TreeInvokeTreeCell) cellParent;
+            MRListUtils.swrap(parentInvoke.getTreeInvokeModel().getSubInvoke(), pos, pos + 1);
+        }
+        MTTreeCell.super.moveDown(nodeParent, nodeCurrent, cellParent, pos);
     }
 
     @Override
@@ -119,5 +144,15 @@ public class TreeInvokeTreeCell implements MTTreeCell<TreeInvokeTreeCell> {
             methodNameFind = treeNodeModel.getClassName();
         }
         GoToSourceUtils.openMethodInEditor(project, treeNodeModel.fClassName(), methodNameFind, treeNodeModel.getMethodSignature());
+    }
+
+    @Override
+    public DefaultMutableTreeNode buildSubTreeNode(String jsonStr, TreePanelMark treePanelMark) {
+        TreeNodeModel treeNodeModelSub = CheckJsonValidUtils.toJavaObject(jsonStr, TreeNodeModel.class, TreeNodeModel::jsonConvertCheck);
+        TreeInvokeModel treeInvokeModelSub = TreeInvokeModel.of(treeNodeModelSub);
+        treeInvokeModel.getSubInvoke().add(treeInvokeModelSub);
+
+        TreeInvokeTreeCell treeInvokeTreeCellSub = new TreeInvokeTreeCell(project, treeNodeModelSub, treeInvokeModelSub);
+        return new DefaultMutableTreeNode(treeInvokeTreeCellSub);
     }
 }

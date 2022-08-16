@@ -28,8 +28,6 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
 
     private static final Logger LOGGER = Logger.getInstance(SequenceGenerator.class);
 
-//    private final Stack<Integer> offsetStack = new Stack<>();
-
     private MapStack<TreeInvokeModel> topStack;
 
     private final SequenceParams params;
@@ -165,7 +163,6 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
 
     @Override
     public void visitMethod(PsiMethod psiMethod) {
-//        int offset = offsetStack.isEmpty() ? psiMethod.getTextOffset() : offsetStack.pop();
         TreeNodeModel treeNodeModel = TreeNodeModel.of(psiMethod);
         TreeInvokeModel treeInvokeModel = TreeInvokeModel.of(treeNodeModel);
         // 判断是否有循环
@@ -216,6 +213,79 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
             methodCall(psiMethod, offset);
         }
         super.visitMethodReferenceExpression(expression);
+    }
+
+    /**
+     * 待研究
+     * @param variable
+     */
+    @Override
+    public void visitLocalVariable(PsiLocalVariable variable) {
+        PsiJavaCodeReferenceElement referenceElement = variable.getTypeElement().getInnermostComponentReferenceElement();
+
+        variableImplementationFinder(referenceElement, variable.getType(), variable.getInitializer());
+
+        super.visitLocalVariable(variable);
+    }
+
+    /**
+     * 待研究
+     * @param expression
+     */
+    @Override
+    public void visitAssignmentExpression(PsiAssignmentExpression expression) {
+        System.out.println("visitAssignmentExpression-->" + expression.getText());
+        PsiExpression re = expression.getRExpression();
+        if (params.isSmartInterface() && re instanceof PsiNewExpression) {
+            String face = Objects.requireNonNull(expression.getType()).getCanonicalText();
+            PsiType psiType = Objects.requireNonNull(expression.getRExpression()).getType();
+            String impl = Objects.requireNonNull(psiType).getCanonicalText();
+
+            params.getInterfaceImplFilter().put(face, new ImplementClassFilter(impl));
+
+        }
+        super.visitAssignmentExpression(expression);
+    }
+
+    /**
+     * 待研究
+     * @param expression
+     */
+    @Override
+    public void visitLambdaExpression(PsiLambdaExpression expression) {
+        System.out.println(" visitLambdaExpression --> " + expression.getText());
+        //        int offset = offsetStack.isEmpty() ? psiMethod.getTextOffset() : offsetStack.pop();
+        TreeNodeModel treeNodeModel = TreeNodeModel.ofLambda(expression);
+        TreeInvokeModel treeInvokeModel = TreeInvokeModel.of(treeNodeModel);
+        // 判断是否有循环
+        boolean recursive = topStack.containsItem(treeInvokeModel);
+        if(recursive){
+            treeInvokeModel.getTreeNodeModel().setMethodType(MethodType.RECURSIVE_METHOD.getType());
+        }
+        // stack before
+        Integer row;
+        if (topStack.size() <= 0) {
+            row = 0;
+        } else {
+            row = topStack.peek().getRow() + 1;
+        }
+        treeInvokeModel.setRow(row);
+        fillRowCol(treeInvokeModel, row);
+        topStack.push(treeInvokeModel);
+        // stack before
+
+        // 不是循环时再往下遍历
+        if(!recursive){
+            super.visitLambdaExpression(expression);
+        }
+        // stack after
+        TreeInvokeModel stackBack = topStack.pop();
+        if (topStack.size() > 0) {
+            topStack.peek().getSubInvoke().add(stackBack);
+        } else {
+            root = stackBack;
+        }
+        // stack after
     }
 
     /**
