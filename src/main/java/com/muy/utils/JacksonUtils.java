@@ -691,4 +691,104 @@ public class JacksonUtils {
             return Maps.newHashMap();
         }
     }
+
+
+    /**
+     * 对 json 进行排序,包括List
+     *
+     * @param json
+     * @return
+     */
+    public static String sortJsonIncludeList(String json) {
+        try {
+            // 起作用的是属性配置
+            if (json.startsWith("[")) {
+                return sortJsonList(json);
+            }
+            Map map = mapper.readValue(json, TreeMap.class);
+            sortMapValue(map);
+            return mapper.writeValueAsString(map);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return json;
+        }
+    }
+
+    private static String sortJsonList(String json) {
+        try {
+            List<TreeMap> map = mapper.readValue(json, new TypeReference<List<TreeMap>>() {
+            });
+            sortListValueMap((List) map);
+            return mapper.writeValueAsString(map);
+        } catch (Exception ex) {
+            // 如果异常说明是简单的类型
+            try {
+                List<Object> objectList = toList(json);
+                primitiveSort(objectList);
+                return mapper.writeValueAsString(objectList);
+            } catch (Exception exc) {
+                ex.printStackTrace();
+                return json;
+            }
+        }
+    }
+
+    private static void sortMapValue(Map map) {
+        if (null == map) {
+            return;
+        }
+        map.forEach((k, v) -> {
+            if (v instanceof List) {
+                List listT = (List) v;
+                if (CollectionUtils.isNotEmpty(listT)) {
+                    Object obj = listT.get(0);
+                    if (obj.getClass().isPrimitive()) {
+                        primitiveSort(listT);
+                    } else if (obj instanceof Map) {
+                        sortListValueMap(listT);
+                    }
+                }
+            } else if (v instanceof Map) {
+                sortMapValue((Map) v);
+            }
+        });
+    }
+
+    /**
+     * 后续遍历的方式
+     *
+     * @param listMap
+     */
+    private static void sortListValueMap(List<Map> listMap) {
+        for (Object cObj : listMap) {
+            sortMapValue((Map) cObj);
+        }
+        Map<Object, String> localCache = Maps.newHashMap();
+        listMap.sort(new Comparator<Map>() {
+            @Override
+            public int compare(Map o1, Map o2) {
+                String jsono1 = localCache.computeIfAbsent(o1, (o) -> {
+                    return JacksonUtils.toJSONString(o);
+                });
+                String jsono2 = localCache.computeIfAbsent(o2, (o) -> {
+                    return JacksonUtils.toJSONString(o);
+                });
+                return jsono1.compareTo(jsono2);
+            }
+        });
+    }
+
+    private static void primitiveSort(List listT) {
+        Object obj = listT.get(0);
+        if (obj instanceof Comparable) {
+            listT.sort(new Comparator<Comparable>() {
+                @Override
+                public int compare(Comparable o1, Comparable o2) {
+                    return o1.compareTo(o2);
+                }
+            });
+        } else {
+            listT.stream().sorted();
+        }
+    }
 }

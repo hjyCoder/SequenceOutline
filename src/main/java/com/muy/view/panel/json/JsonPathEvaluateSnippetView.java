@@ -26,10 +26,7 @@ import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.components.BorderLayoutPanel;
 import com.intellij.util.ui.update.MergingUpdateQueue;
 import com.intellij.util.ui.update.Update;
-import com.muy.common.actions.FormatJsonViewAction;
-import com.muy.common.actions.MinifyJsonViewAction;
-import com.muy.common.actions.SortJsonViewAction;
-import com.muy.common.actions.VerifyJsonViewAction;
+import com.muy.common.actions.*;
 import com.muy.common.utils.JsonUtils;
 import com.muy.utils.ActionUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -110,6 +107,7 @@ public class JsonPathEvaluateSnippetView extends JsonPathEvaluateView{
         rightClickActionGroup.add(new MinifyJsonViewAction(this));
         rightClickActionGroup.add(new SortJsonViewAction(this));
         rightClickActionGroup.add(new VerifyJsonViewAction(this));
+        rightClickActionGroup.add(new SortIncludeListJsonViewAction(this));
         actionPopupMenu = ActionUtil.createActionPopupMenu(this, "", rightClickActionGroup);
         this.addMouseListener(new MouseAdapter() {
             @Override

@@ -22,8 +22,8 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.muy.common.utils.JacksonUtils;
 import com.muy.common.utils.JsonUtils;
+import com.muy.utils.JacksonUtils;
 import com.muy.view.panel.PanelCompare;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,13 +39,13 @@ import static com.intellij.vcsUtil.VcsUtil.getFilePath;
  * @Author jiyanghuang
  * @Date 2022/8/7 13:50
  */
-public class CompareJsonDiffActionClick extends CompareFilesAction {
+public class CompareJsonDiffAllSortActionClick extends CompareFilesAction {
 
-    public static final String ACTION_TEXT = "Json Diff";
+    public static final String ACTION_TEXT = "Json Diff All Sort";
 
     private PanelCompare panelCompare;
 
-    public CompareJsonDiffActionClick(PanelCompare panelCompare) {
+    public CompareJsonDiffAllSortActionClick(PanelCompare panelCompare) {
         super();
         this.panelCompare = panelCompare;
         init();
@@ -53,7 +53,7 @@ public class CompareJsonDiffActionClick extends CompareFilesAction {
 
     public void init(){
         getTemplatePresentation().setText(ACTION_TEXT);
-        getTemplatePresentation().setIcon(AllIcons.Diff.Compare4LeftRight);
+        getTemplatePresentation().setIcon(AllIcons.Diff.Compare3LeftRight);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class CompareJsonDiffActionClick extends CompareFilesAction {
 
         VirtualFile[] files = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY);
 
-        String text = (files != null && files.length == 1) ? "Compare JSON File With..." : "Compare JSON Files";
+        String text = (files != null && files.length == 1) ? "Compare JSON File With..." : "Compare JSON Files  All Sort";
 
         e.getPresentation().setText(text);
     }
@@ -109,7 +109,7 @@ public class CompareJsonDiffActionClick extends CompareFilesAction {
     }
 
     private DiffContent content(String jsonContent, Project project) throws IOException {
-        String sortJson = JacksonUtils.sortJson(jsonContent);
+        String sortJson = JacksonUtils.sortJsonIncludeList(jsonContent);
         String prettyJsonString = JsonUtils.formatJson(sortJson);
         return new DocumentContentImpl( project, new DocumentImpl(prettyJsonString), JsonFileType.INSTANCE);
     }

@@ -20,6 +20,8 @@ import java.io.Serializable;
 @Data
 public class TreeNodeModel implements Serializable, Cloneable {
 
+    public static final String CONSTRUCTORS_METHOD_NAME = "<init>";
+
     private String scheme;
 
     private String packageName;
@@ -82,7 +84,7 @@ public class TreeNodeModel implements Serializable, Cloneable {
             treeNodeModel.setClassName(fClassName.substring(pos + 1));
             treeNodeModel.setPackageName(fClassName.substring(0, pos));
         }
-        treeNodeModel.setMethodName(psiMethod.isConstructor() ? "<init>" : psiMethod.getName());
+        treeNodeModel.setMethodName(psiMethod.isConstructor() ? CONSTRUCTORS_METHOD_NAME : psiMethod.getName());
         treeNodeModel.setMethodSignature(MethodDescUtils.getMethodDescriptor(psiMethod));
         String uriMd5 = treeNodeModel.uriMd5Gen();
 
@@ -132,6 +134,13 @@ public class TreeNodeModel implements Serializable, Cloneable {
 
     public String fClassName(){
         return packageName + "." + className;
+    }
+
+    public String findMethodName() {
+        if (CONSTRUCTORS_METHOD_NAME.equals(methodName)) {
+            return className;
+        }
+        return methodName;
     }
 
     public static boolean jsonConvertCheck(TreeNodeModel treeNodeModel) {

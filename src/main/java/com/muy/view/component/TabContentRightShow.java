@@ -17,9 +17,10 @@ public class TabContentRightShow<T extends TreePanelMark> extends JPanel {
     private JComponent currentShow = null;
 
     private T t;
-    public TabContentRightShow(Project project){
+    public TabContentRightShow(Project project, boolean visible){
         this.project = project;
         setLayout(new BorderLayout());
+        setVisible(visible);
     }
 
     public void fillLeft(T t){
@@ -42,8 +43,11 @@ public class TabContentRightShow<T extends TreePanelMark> extends JPanel {
         if(null != currentShow){
             remove(currentShow);
         }
-        currentShow = panel;
-        add(currentShow, BorderLayout.CENTER);
+        if(null != panel){
+            currentShow = panel;
+            add(currentShow, BorderLayout.CENTER);
+        }
+
         updateUI();
     }
 }

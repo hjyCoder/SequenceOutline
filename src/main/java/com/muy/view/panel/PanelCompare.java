@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ui.JBUI;
 import com.muy.common.actions.CompareJsonDiffActionClick;
+import com.muy.common.actions.CompareJsonDiffAllSortActionClick;
 import com.muy.view.panel.json.JsonPathEvaluateSnippetView;
 
 import javax.swing.*;
@@ -38,6 +39,8 @@ public class PanelCompare extends JSplitPane {
         setRightComponent(rightEditor);
 
         rightEditor.rightClickActionGroup().add(new CompareJsonDiffActionClick(PanelCompare.this));
+        rightEditor.rightClickActionGroup().add(new CompareJsonDiffAllSortActionClick(PanelCompare.this));
+
     }
 
     public Editor getLeftEditor() {

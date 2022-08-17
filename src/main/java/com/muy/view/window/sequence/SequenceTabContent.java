@@ -12,7 +12,7 @@ import com.muy.view.component.TabContentRightShow;
 public class SequenceTabContent extends AbstractLRTabContent<SequenceLeft, TabContentRightShow> {
 
     public SequenceTabContent(Project project, AbstractSequenceOutlineSetTab abstractToolSetTab, String tabId) {
-        super(project, new SequenceLeft(project), new TabContentRightShow(project), abstractToolSetTab, tabId);
+        super(project, new SequenceLeft(project), new TabContentRightShow(project, false), abstractToolSetTab, tabId);
         r.fillLeft(l);
     }
 }

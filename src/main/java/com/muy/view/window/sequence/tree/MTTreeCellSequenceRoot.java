@@ -1,12 +1,14 @@
 package com.muy.view.window.sequence.tree;
 
-import com.alibaba.fastjson.JSON;
 import com.intellij.openapi.project.Project;
 import com.muy.common.tree.MTTreeCell;
 import com.muy.common.tree.TreePanelMark;
 import com.muy.common.utils.CheckJsonValidUtils;
+import com.muy.view.component.SequenceOutlineComponent;
+import com.muy.view.component.TabContentRightShow;
 import com.muy.view.window.sequence.bean.TreeNodeModelSequence;
 
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -32,5 +34,11 @@ public class MTTreeCellSequenceRoot implements MTTreeCell {
         MTTreeCellSequenceEntrance sequenceEntrance = new MTTreeCellSequenceEntrance(project, treeNodeModel);
         DefaultMutableTreeNode sequenceTreeNode = new DefaultMutableTreeNode(sequenceEntrance);
         return sequenceTreeNode;
+    }
+
+    @Override
+    public void treeSelectionListener(JTree tree, DefaultMutableTreeNode mutableTreeNode, TreePanelMark treePanelMark) {
+        TabContentRightShow tabContentRightShow = SequenceOutlineComponent.getInstance(project).findInstance(TabContentRightShow.class);
+        tabContentRightShow.updatePanel(null);
     }
 }

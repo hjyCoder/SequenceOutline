@@ -8,6 +8,7 @@ import com.muy.common.tree.MTTreeCell;
 import com.muy.common.tree.TreePanelMark;
 import com.muy.common.tree.actions.AbstractMTTreeCellSelectTreeAction;
 import com.muy.domain.bean.invoketree.TreeInvokeModel;
+import com.muy.utils.GuiUtils;
 import com.muy.utils.PlantUmlSequenceCreator;
 import com.muy.view.window.sequence.tree.MTTreeCellSequenceEntrance;
 
@@ -25,7 +26,7 @@ public class GenPlantUmlAction extends AbstractMTTreeCellSelectTreeAction {
     Logger LOGGER = Logger.getInstance(GenPlantUmlAction.class);
 
     public GenPlantUmlAction(TreePanelMark treePanelMark) {
-        super("GenPlantUml", "GenPlantUml", AllIcons.General.Remove, treePanelMark);
+        super("GenPlantUml", "GenPlantUml", GuiUtils.PLANT_UML, treePanelMark);
     }
 
     @Override

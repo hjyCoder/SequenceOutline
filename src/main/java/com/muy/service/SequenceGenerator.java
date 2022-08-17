@@ -66,12 +66,18 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
     }
 
     public TreeInvokeModel generate(PsiMethod psiMethod) {
-        if (psiMethod.getLanguage().equals(JavaLanguage.INSTANCE)) {
-            return generateJava(psiMethod);
-        } else {
+        try{
+            if (psiMethod.getLanguage().equals(JavaLanguage.INSTANCE)) {
+                return generateJava(psiMethod);
+            } else {
 //            return topStack;
+                return null;
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
             return null;
         }
+
     }
 
     /**

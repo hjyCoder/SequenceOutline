@@ -9,6 +9,7 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
 import com.intellij.util.concurrency.NonUrgentExecutor;
+import com.muy.common.notification.SequenceOutlineNotifier;
 import com.muy.common.tree.MTTreeCell;
 import com.muy.common.tree.TreeCellEventExeContext;
 import com.muy.common.tree.TreeCellEventHandle;
@@ -103,8 +104,9 @@ public class MTTreeCellSequenceEntrance implements MTTreeCell {
             @Override
             public void process(TreeCellEventExeContext exeContext, CompletableFuture<Void> cf) throws Exception {
                 ReadAction.nonBlocking(() -> {
-                    final PsiMethod psiMethod = SequenceOutlinePsiUtils.findPsiMethodSign(GoToSourceUtils.psiManager(project), treeNodeModelSequence.fClassName(), treeNodeModelSequence.getMethodName(), treeNodeModelSequence.getMethodSignature());
+                    final PsiMethod psiMethod = SequenceOutlinePsiUtils.findPsiMethodSign(GoToSourceUtils.psiManager(project), treeNodeModelSequence.fClassName(), treeNodeModelSequence.findMethodName(), treeNodeModelSequence.getMethodSignature());
                     if (null == psiMethod) {
+                        SequenceOutlineNotifier.notifyError("Can find the entrance method");
                         return null;
                     }
                     SequenceParams paramsScan = SequenceParams.convertToSequenceParams(treeNodeModelSequence.getFilterConfig(), psiMethod);
@@ -123,6 +125,8 @@ public class MTTreeCellSequenceEntrance implements MTTreeCell {
                     if(null != p){
                         List<MTTreeCell> showList = Lists.newArrayList(p);
                         reload(tree, mutableTreeNode, showList);
+                    }else{
+                        SequenceOutlineNotifier.notifyError("scan code error");
                     }
                     cf.complete(null);
                 }).inSmartMode(project).submit(NonUrgentExecutor.getInstance());
@@ -196,7 +200,7 @@ public class MTTreeCellSequenceEntrance implements MTTreeCell {
     public void removeCurrentTreeNode(DefaultMutableTreeNode nodeParent, DefaultMutableTreeNode nodeCurrent, MTTreeCell cellParent) {
         SequenceConfiguration sequenceConfiguration = SequenceConfiguration.getInstance(project);
         sequenceConfiguration.removeData(treeNodeModelSequence);
-        MTTreeCell.super.removeCurrentTreeNode(nodeParent, nodeCurrent, cellParent);
+        nodeParent.remove(nodeCurrent);
 
     }
 

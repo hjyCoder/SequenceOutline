@@ -4,10 +4,10 @@ import com.google.common.collect.Sets;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
-import com.muy.common.notification.SequenceOutlineNotifier;
 import com.muy.common.select.MRMultiSelect;
 import com.muy.common.tree.AbstractMTTreePanel;
 import com.muy.common.tree.MTTreeCell;
+import com.muy.utils.JTreeUtils;
 import com.muy.view.window.sequence.bean.TreeNodeModelSequence;
 import com.muy.view.window.sequence.configuration.SequenceConfiguration;
 import com.muy.view.window.sequence.tree.MTTreeCellSequenceEntrance;
@@ -29,7 +29,7 @@ public class SequenceLeft extends AbstractMTTreePanel {
     private MRMultiSelect multiSelect;
 
     public SequenceLeft(Project project) {
-        super(project, true, new MTTreeCellSequenceRoot(project));
+        super(project, false, new MTTreeCellSequenceRoot(project));
         SequenceConfiguration sequenceConfiguration = SequenceConfiguration.getInstance(project);
         List<TreeNodeModelSequence> entrances = sequenceConfiguration.getEntrances();
         if(CollectionUtils.isNotEmpty(entrances)){
@@ -38,6 +38,7 @@ public class SequenceLeft extends AbstractMTTreePanel {
                 DefaultMutableTreeNode sequenceTreeNode = new DefaultMutableTreeNode(sequenceEntrance);
                 rootTreeNode.add(sequenceTreeNode);
             }
+            JTreeUtils.reload(jTree(), rootTreeNode);
         }
     }
 
