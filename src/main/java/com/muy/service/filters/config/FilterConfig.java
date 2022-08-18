@@ -27,6 +27,8 @@ public class FilterConfig {
 
     private Set<String> allowPrivateMethod;
 
+    private Boolean notLambda;
+
     /**
      * 方法名正则表达式
      */
@@ -97,6 +99,7 @@ public class FilterConfig {
         filterConfig.setParentClassNamePattern(config.getParentClassNamePattern());
         filterConfig.setImplementClassSet(config.getImplementClassSet());
         filterConfig.setCallDepth(config.getCallDepth());
+        filterConfig.setNotLambda(config.getNotLambda());
     }
 
 }

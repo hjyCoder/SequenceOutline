@@ -60,9 +60,9 @@
             <group id="Reflect.Group.Main" text="Reflect Manipulation"
                    description="Group of reflect"
                    popup="true"
-                   icon="fileTypes/json.svg">
+                   icon="fileTypes/java.svg">
                 <action id="com.muy.action.JavaMethodIdentityAction"
-                        class="com.muy.action.JavaMethodIdentityAction" text="JavaMethodIdentity" description="JavaMethodIdentity"/>
+                        class="com.muy.action.JavaMethodIdentityAction" text="JavaMethodIdentity" description="JavaMethodIdentity" icon="nodes/methodReference.svg"/>
             </group>
 
         </group>

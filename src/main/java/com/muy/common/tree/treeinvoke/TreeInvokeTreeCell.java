@@ -43,6 +43,7 @@ public class TreeInvokeTreeCell implements MTTreeCell<TreeInvokeTreeCell> {
     /**
      * 展示的节点信息
      */
+    @Getter
     private TreeNodeModel treeNodeModel;
 
     private TreeRightPanelJson treeRightPanelJson;
@@ -139,11 +140,27 @@ public class TreeInvokeTreeCell implements MTTreeCell<TreeInvokeTreeCell> {
 
     @Override
     public void doubleClick(JTree tree, DefaultMutableTreeNode mutableTreeNode, TreePanelMark treePanelMark) {
-        String methodNameFind = treeNodeModel.getMethodName();
-        if(GoToSourceUtils.CONSTRUCTORS_METHOD_NAME.equals(methodNameFind)){
-            methodNameFind = treeNodeModel.getClassName();
+        if (TreeNodeModel.SCHEME_JAVA.equals(treeNodeModel.getScheme())) {
+            GoToSourceUtils.openMethodInEditor(project, treeNodeModel.fClassName(), treeNodeModel.findMethodName(), treeNodeModel.getMethodSignature());
+        } else if (TreeNodeModel.SCHEME_LAMBDA.equals(treeNodeModel.getScheme())) {
+            DefaultMutableTreeNode parent = (DefaultMutableTreeNode) mutableTreeNode.getParent();
+            int pos = -1;
+            for (int i = 0; i < parent.getChildCount(); i++) {
+                DefaultMutableTreeNode child = (DefaultMutableTreeNode) parent.getChildAt(i);
+                if (!(child.getUserObject() instanceof TreeInvokeTreeCell)) {
+                    continue;
+                }
+                TreeInvokeTreeCell invokeTreeCellChild = (TreeInvokeTreeCell) child.getUserObject();
+                if (treeNodeModel.sameLambda(invokeTreeCellChild.getTreeNodeModel())) {
+                    pos++;
+                }
+                // 遇到当前节点说明已经找到
+                if (child.equals(mutableTreeNode)) {
+                    break;
+                }
+            }
+            GoToSourceUtils.openLambdaMethodInEditor(project, treeNodeModel.fClassName(), treeNodeModel.findMethodName().split("_")[0], treeNodeModel.getEncloseMethodSignature(), pos, treeNodeModel.getMethodSignature());
         }
-        GoToSourceUtils.openMethodInEditor(project, treeNodeModel.fClassName(), methodNameFind, treeNodeModel.getMethodSignature());
     }
 
     @Override

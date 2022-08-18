@@ -240,7 +240,6 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
      */
     @Override
     public void visitAssignmentExpression(PsiAssignmentExpression expression) {
-        System.out.println("visitAssignmentExpression-->" + expression.getText());
         PsiExpression re = expression.getRExpression();
         if (params.isSmartInterface() && re instanceof PsiNewExpression) {
             String face = Objects.requireNonNull(expression.getType()).getCanonicalText();
@@ -255,41 +254,49 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
 
     /**
      * 待研究
+     *
      * @param expression
      */
     @Override
     public void visitLambdaExpression(PsiLambdaExpression expression) {
-        System.out.println(" visitLambdaExpression --> " + expression.getText());
+        if (params.isNotLambda()) {
+            return;
+        }
+
         //        int offset = offsetStack.isEmpty() ? psiMethod.getTextOffset() : offsetStack.pop();
         TreeNodeModel treeNodeModel = TreeNodeModel.ofLambda(expression);
         TreeInvokeModel treeInvokeModel = TreeInvokeModel.of(treeNodeModel);
         // 判断是否有循环
         boolean recursive = topStack.containsItem(treeInvokeModel);
-        if(recursive){
+        if (recursive) {
             treeInvokeModel.getTreeNodeModel().setMethodType(MethodType.RECURSIVE_METHOD.getType());
         }
         // stack before
-        Integer row;
-        if (topStack.size() <= 0) {
-            row = 0;
-        } else {
-            row = topStack.peek().getRow() + 1;
+        if (!paramsStack.isNotLambda()) {
+            Integer row;
+            if (topStack.size() <= 0) {
+                row = 0;
+            } else {
+                row = topStack.peek().getRow() + 1;
+            }
+            treeInvokeModel.setRow(row);
+            fillRowCol(treeInvokeModel, row);
+            topStack.push(treeInvokeModel);
         }
-        treeInvokeModel.setRow(row);
-        fillRowCol(treeInvokeModel, row);
-        topStack.push(treeInvokeModel);
         // stack before
 
         // 不是循环时再往下遍历
-        if(!recursive){
+        if (!recursive) {
             super.visitLambdaExpression(expression);
         }
         // stack after
-        TreeInvokeModel stackBack = topStack.pop();
-        if (topStack.size() > 0) {
-            topStack.peek().getSubInvoke().add(stackBack);
-        } else {
-            root = stackBack;
+        if (!paramsStack.isNotLambda()) {
+            TreeInvokeModel stackBack = topStack.pop();
+            if (topStack.size() > 0) {
+                topStack.peek().getSubInvoke().add(stackBack);
+            } else {
+                root = stackBack;
+            }
         }
         // stack after
     }

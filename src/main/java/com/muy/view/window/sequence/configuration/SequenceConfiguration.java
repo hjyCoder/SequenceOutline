@@ -19,7 +19,7 @@ import java.util.List;
 @State(
         name = "SequenceConfiguration",
         storages = {
-                @Storage(file = "$PROJECT_CONFIG_DIR$/sequenceSettings.xml")
+                @Storage(file = "$PROJECT_CONFIG_DIR$/SequenceOutlineSettings.xml")
         }
 )
 public class SequenceConfiguration extends ProjectConfiguration<SequenceConfiguration, TreeNodeModelSequence> {

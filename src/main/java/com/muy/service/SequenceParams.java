@@ -3,6 +3,7 @@ package com.muy.service;
 import com.intellij.psi.PsiMethod;
 import com.muy.service.filters.*;
 import com.muy.service.filters.config.FilterConfig;
+import com.muy.utils.BooleanUtils;
 import lombok.Data;
 
 /**
@@ -18,6 +19,7 @@ public class SequenceParams {
     private int maxDepth = 3;
     private boolean allowRecursion = false;
     private boolean smartInterface = true;
+    private boolean notLambda = false;
     private final CompositeMethodFilter methodFilter = new CompositeMethodFilter();
     private final InterfaceImplFilter interfaceImplFilter = new InterfaceImplFilter();
 
@@ -39,6 +41,7 @@ public class SequenceParams {
 
         InterfaceImplFilter interfaceImplFilter = sequenceParams.getInterfaceImplFilter();
         interfaceImplFilter.put("one", new FilterImplementClass(filterConfig.getImplementClassSet()));
+        sequenceParams.setNotLambda(BooleanUtils.defaultFalse(filterConfig.getNotLambda()));
         return sequenceParams;
     }
 }

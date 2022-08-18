@@ -22,6 +22,10 @@ public class TreeNodeModel implements Serializable, Cloneable {
 
     public static final String CONSTRUCTORS_METHOD_NAME = "<init>";
 
+    public static final String SCHEME_JAVA = "java";
+
+    public static final String SCHEME_LAMBDA = "lambda";
+
     private String scheme;
 
     private String packageName;
@@ -41,6 +45,12 @@ public class TreeNodeModel implements Serializable, Cloneable {
      * 用于静态扫描时显示图片用
      */
     private int methodType = 2;
+
+    /**
+     * 当是 lambda 时，所在方法的签名，用于跳转
+     */
+    private String encloseMethodSignature;
+
 
     public String uriMd5Gen() {
         // java://className/methodName~(methodSign)reSign
@@ -63,6 +73,21 @@ public class TreeNodeModel implements Serializable, Cloneable {
             uriMd5 = uriMd5Gen();
         }
         return uriMd5;
+    }
+
+    /**
+     * 判断是否为相同的 Lambda, 包括包装的方法
+     *
+     * @param treeNodeModel
+     * @return
+     */
+    public boolean sameLambda(TreeNodeModel treeNodeModel) {
+        if (SCHEME_LAMBDA.equals(treeNodeModel.getScheme()) && SCHEME_LAMBDA.equals(this.getScheme())) {
+            if (this.getMethodName().equals(treeNodeModel.getMethodName()) && this.getEncloseMethodSignature().equals(treeNodeModel.getEncloseMethodSignature())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static TreeNodeModel of(PsiMethod psiMethod){
@@ -91,15 +116,15 @@ public class TreeNodeModel implements Serializable, Cloneable {
         return treeNodeModel;
     }
 
-    public static TreeNodeModel ofLambda(PsiLambdaExpression expression){
+    public static TreeNodeModel ofLambda(PsiLambdaExpression expression) {
         TreeNodeModel treeNodeModel = new TreeNodeModel();
         treeNodeModel.setScheme("lambda");
         String fClassName;
         PsiMethod psiMethod = SequenceOutlinePsiUtils.findEnclosedPsiMethod(expression);
-        if(psiMethod.getContainingClass() instanceof PsiAnonymousClass){
+        if (psiMethod.getContainingClass() instanceof PsiAnonymousClass) {
             PsiClass psiClass = SequenceOutlinePsiUtils.findPsiClass(psiMethod.getContainingClass());
             fClassName = psiClass.getQualifiedName() + "$";
-        }else{
+        } else {
             methodType(treeNodeModel, psiMethod);
             fClassName = psiMethod.getContainingClass().getQualifiedName();
         }
@@ -113,12 +138,13 @@ public class TreeNodeModel implements Serializable, Cloneable {
         }
         String functionName = "";
         PsiType functionNameType = expression.getFunctionalInterfaceType();
-        if(null != functionNameType && functionNameType instanceof PsiClassReferenceType){
-            PsiClassReferenceType functionNameClass = (PsiClassReferenceType)functionNameType;
+        if (null != functionNameType && functionNameType instanceof PsiClassReferenceType) {
+            PsiClassReferenceType functionNameClass = (PsiClassReferenceType) functionNameType;
             functionName = "[" + functionNameClass.getClassName() + "]";
         }
         treeNodeModel.setMethodName(psiMethod.getName() + "_" + functionName + SequenceConstant.Lambda_Invoke);
         treeNodeModel.setMethodSignature(MethodDescUtils.getMethodDescriptor(expression));
+        treeNodeModel.setEncloseMethodSignature(MethodDescUtils.getMethodDescriptor(psiMethod));
         treeNodeModel.setMethodType(MethodType.LAMBDA_METHOD.getType());
         String uriMd5 = treeNodeModel.uriMd5Gen();
         return treeNodeModel;

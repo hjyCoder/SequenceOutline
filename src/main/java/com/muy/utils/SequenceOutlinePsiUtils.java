@@ -5,6 +5,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.util.ClassUtil;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.muy.service.FindLambdaVisitor;
+import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -327,5 +329,17 @@ public class SequenceOutlinePsiUtils {
             parent = parent.getParent();
         }
         return (PsiMethod) parent;
+    }
+
+    public static PsiLambdaExpression findLambda(PsiMethod psiMethod, String methodSignatrue, int pos) {
+        FindLambdaVisitor findLambdaVisitor = new FindLambdaVisitor(methodSignatrue, psiMethod);
+        findLambdaVisitor.startVisit();
+        if (CollectionUtils.isEmpty(findLambdaVisitor.getFindResult())) {
+            return null;
+        }
+        if (pos < 0 || pos >= findLambdaVisitor.getFindResult().size()) {
+            return findLambdaVisitor.getFindResult().get(0);
+        }
+        return findLambdaVisitor.getFindResult().get(pos);
     }
 }

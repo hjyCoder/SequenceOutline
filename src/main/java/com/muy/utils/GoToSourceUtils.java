@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiLambdaExpression;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.util.ClassUtil;
@@ -61,6 +62,46 @@ public class GoToSourceUtils {
                     VirtualFile virtualFile = SequenceOutlinePsiUtils.findVirtualFile(containingClass);
 
                     final int offset = SequenceOutlinePsiUtils.findNaviOffset(psiMethod);
+
+                    return new Pair<>(virtualFile, offset);
+
+                })
+                .finishOnUiThread(ModalityState.defaultModalityState(), p -> {
+                    if (p != null)
+                        openInEditor(project, p.first, p.second);
+                })
+                .inSmartMode(project)
+                .submit(NonUrgentExecutor.getInstance());
+    }
+
+    /**
+     * @param project
+     * @param fClassName 全类名
+     * @param methodName 方法名，如果是构建函数，则是类名
+     * @param methodSign 方法签名
+     */
+    public static void openLambdaMethodInEditor(Project project, String fClassName, String methodName, String methodSign, int pos, String lambdaSign) {
+
+        ReadAction
+                .nonBlocking(() -> {
+                    final PsiMethod psiMethod = SequenceOutlinePsiUtils.findPsiMethodSign(psiManager(project), fClassName, methodName, methodSign);
+                    if (psiMethod == null) {
+                        return null;
+                    }
+
+                    final PsiLambdaExpression lambdaExpression = SequenceOutlinePsiUtils.findLambda(psiMethod, lambdaSign, pos);
+                    if (null == lambdaExpression) {
+                        return null;
+                    }
+
+                    final PsiClass containingClass = psiMethod.getContainingClass();
+                    if (containingClass == null) {
+                        return null;
+                    }
+
+                    VirtualFile virtualFile = SequenceOutlinePsiUtils.findVirtualFile(containingClass);
+
+                    final int offset = SequenceOutlinePsiUtils.findNaviOffset(lambdaExpression);
 
                     return new Pair<>(virtualFile, offset);
 

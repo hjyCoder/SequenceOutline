@@ -34,6 +34,7 @@ public class SequenceFilter extends JPanel {
     private JTextField tfImplClassNames;
     private JTextField tfTreeDepth;
     private JPanel rootPanel;
+    private JCheckBox notLambda;
 
     private FilterConfig filterConfig;
 
@@ -53,6 +54,7 @@ public class SequenceFilter extends JPanel {
         filterConfig.setNotSet(notSet.isSelected());
         filterConfig.setNotPrivateMethod(notPrivate.isSelected());
         filterConfig.setNotConstructor(notConstructor.isSelected());
+        filterConfig.setNotLambda(notLambda.isSelected());
         fillTextToSet(tfAllowGet.getText(), filterConfig::setAllowGet);
         fillTextToSet(tfAllowSet.getText(), filterConfig::setAllowSet);
         fillTextToSet(tfAllowPrivate.getText(), filterConfig::setAllowPrivateMethod);
@@ -80,6 +82,7 @@ public class SequenceFilter extends JPanel {
         fillCheck(filterConfig::getNotSet, notSet);
         fillCheck(filterConfig::getNotPrivateMethod, notPrivate);
         fillCheck(filterConfig::getNotConstructor, notConstructor);
+        fillCheck(filterConfig::getNotLambda, notLambda);
 
         fillSetToText(filterConfig::getAllowGet, tfAllowGet);
         fillSetToText(filterConfig::getAllowSet, tfAllowSet);
