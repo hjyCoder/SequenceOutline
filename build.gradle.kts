@@ -21,10 +21,6 @@ version = properties("pluginVersion")
 repositories {
   mavenLocal()
   mavenCentral()
-//  maven { url 'https://plugins.gradle.org/m2/' }
-//  maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
-//  maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-//  maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
 }
 
 dependencies {
@@ -36,23 +32,6 @@ dependencies {
   implementation("com.alibaba:transmittable-thread-local:2.12.1")
   implementation("org.apache.commons:commons-collections4:4.4")
   implementation("com.google.guava:guava:31.1-jre")
-//  implementation("com.moorror.plugin.common.test:moorror-plugin-common-test:1.0-SNAPSHOT"){
-//    exclude(group="org.slf4j", module = "slf4j-api")
-//  }
-//  implementation("com.moorror.common.money.share:moorror-common-money-share:1.0-SNAPSHOT")
-//  implementation("com.moorror.common.utils:moorror-common-utils:1.0-SNAPSHOT")
-//  implementation("org.slf4j:slf4j-api:1.7.32")
-//  implementation("redis.clients:jedis:4.2.3"){
-//    exclude(group="org.slf4j", module = "slf4j-api")
-//  }
-
-//  implementation(files("/Users/jiyanghuang/Documents/programDev/bdef/bdef-constant/target/bdef-constant-1.0-SNAPSHOT.jar",
-//    "/Users/jiyanghuang/Documents/programDev/bdef/bdef-model/target/bdef-model-1.0-SNAPSHOT.jar",
-//  "/Users/jiyanghuang/Documents/programDev/bdef/bdef-runtime/target/bdef-runtime-1.0-SNAPSHOT.jar"))
-//
-//  compile group: 'com.moorror.plugin.common.test', name: 'moorror-plugin-common-test', version: '1.0-SNAPSHOT'
-//  compile group: 'com.moorror.common.money.share', name: 'moorror-common-money-share', version: '1.0-SNAPSHOT'
-//  compile group: 'com.moorror.common.utils', name: 'moorror-common-utils', version: '1.0-SNAPSHOT'
 }
 
 intellij {
