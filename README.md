@@ -26,10 +26,14 @@
 
 ## Some Screenshots
 Json Operation
-![new-connection](./img/JsonFormat.png)
+![JsonFormat](./img/JsonFormat.png)
 JsonPath
-![dbs](./img/JsonPath.png)
+![JsonPath](./img/JsonPath.png)
 Sort Json
-![keys](./img/SortOrAllSort.png)
+![SortOrAllSort](./img/SortOrAllSort.png)
 Diff Json
-![add-a-key](./img/rightDiff.png)
+![rightDiff](./img/rightDiff.png)
+SequenceBaseUse
+![SequenceBaseUse](./img/SequenceBaseUse.png)
+SequenceConfig
+![SequenceConfig](./img/SequenceConfig.png)
