@@ -31,7 +31,7 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.kotlin</depends>
     <depends>com.intellij.modules.lang</depends>
-
+    <depends>com.intellij.modules.java</depends>
 
     <application-components>
     </application-components>
@@ -48,6 +48,7 @@
         <projectService serviceInterface="com.muy.view.window.sequence.configuration.SequenceConfiguration"
                         serviceImplementation="com.muy.view.window.sequence.configuration.SequenceConfiguration"/>
 
+        <notificationGroup id="SequenceOutlineNotifier" displayType="BALLOON" hideFromSettings="true"/>
     </extensions>
 
     <actions>

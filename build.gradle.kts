@@ -4,7 +4,7 @@ plugins {
   // Java support
   id("java")
   // Kotlin support
-  id("org.jetbrains.kotlin.jvm") version "1.6.10"
+  id("org.jetbrains.kotlin.jvm") version "1.7.10"
   // Gradle IntelliJ Plugin
   id("org.jetbrains.intellij") version "1.8.0"
   // Gradle Changelog Plugin
@@ -32,6 +32,11 @@ dependencies {
   implementation("com.alibaba:transmittable-thread-local:2.12.1")
   implementation("org.apache.commons:commons-collections4:4.4")
   implementation("com.google.guava:guava:31.1-jre")
+}
+
+tasks.withType<JavaCompile> {
+  options.encoding = "UTF-8"
+  options.compilerArgs = listOf("-Xlint:deprecation")
 }
 
 intellij {

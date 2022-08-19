@@ -1,7 +1,8 @@
 package com.muy.utils;
 
+import com.intellij.openapi.util.Key;
 import com.intellij.ui.AnimatedIcon;
-import com.intellij.ui.ComponentUtil;
+import com.intellij.ui.ClientProperty;
 import com.intellij.ui.TreeSpeedSearch;
 import com.muy.common.tree.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -21,15 +22,21 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.intellij.ui.AnimatedIcon.ANIMATION_IN_RENDERER_ALLOWED;
-import static com.intellij.ui.render.RenderingHelper.SHRINK_LONG_RENDERER;
-import static com.intellij.ui.tree.ui.DefaultTreeUI.AUTO_EXPAND_ALLOWED;
-
 /**
  * @Author jiyanghuang
  * @Date 2022/6/15 23:50
  */
 public class JTreeUtils {
+
+    /**
+     * com.intellij.ui.AnimatedIcon#ANIMATION_IN_RENDERER_ALLOWED
+     */
+    private static final String ANIMATION_IN_RENDERER_ALLOWED_KEY = "ANIMATION_IN_RENDERER_ALLOWED";
+
+    /**
+     * com.intellij.ui.render.RenderingHelper#SHRINK_LONG_RENDERER
+     */
+    private static final String SHRINK_LONG_RENDERER_KEY = "SHRINK_LONG_RENDERER";
 
     /**
      * 展开tree视图
@@ -60,6 +67,7 @@ public class JTreeUtils {
      *
      * @param tree
      * @param treePanel
+     * @param rootVisible
      */
     public static void configTree(JTree tree, JScrollPane treePanel, boolean rootVisible) {
         // tree 配置
@@ -74,9 +82,12 @@ public class JTreeUtils {
         // 快速搜索
         new TreeSpeedSearch(tree);
         // 用于loading的关键配置
-        ComponentUtil.putClientProperty(tree, ANIMATION_IN_RENDERER_ALLOWED, true);
-        ComponentUtil.putClientProperty(tree, AUTO_EXPAND_ALLOWED, false);
-        ComponentUtil.putClientProperty(tree, SHRINK_LONG_RENDERER, true);
+        Key key = FieldReflectUtils.treeLoading();
+        if(null != key){
+            ClientProperty.put(tree, Key.create(ANIMATION_IN_RENDERER_ALLOWED_KEY), true);
+        }
+//        ClientProperty.put(tree, AUTO_EXPAND_ALLOWED, false);
+//        ClientProperty.put(tree, Key.create(SHRINK_LONG_RENDERER_KEY), true);
 
 //        tree.putClientProperty(SHRINK_LONG_RENDERER, true);
     }
@@ -99,6 +110,12 @@ public class JTreeUtils {
         return root;
     }
 
+    /**
+     * 递归遍历数据结构生成树节点
+     *
+     * @param subTreeCells
+     * @param parentNode
+     */
     public static void renderRepeaterTreeSub(List<MTTreeCell> subTreeCells, DefaultMutableTreeNode parentNode) {
         if (CollectionUtils.isEmpty(subTreeCells)) {
             return;

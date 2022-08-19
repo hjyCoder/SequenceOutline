@@ -8,7 +8,7 @@ import com.intellij.openapi.application.WriteAction;
 import com.intellij.util.ThrowableRunnable;
 import com.muy.common.notification.EditorHintsNotifier;
 import com.muy.common.utils.JsonUtils;
-import com.muy.view.panel.json.JsonPathEvaluateSnippetView;
+import com.muy.view.panel.json.JsonPathEvaluateSnippetViewJava;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -23,9 +23,9 @@ public class FormatJsonViewAction extends AnAction {
 
     public static final String ACTION_TEXT = "Expand Json";
 
-    private JsonPathEvaluateSnippetView jsonPathEvaluateSnippetView;
+    private JsonPathEvaluateSnippetViewJava jsonPathEvaluateSnippetView;
 
-    public FormatJsonViewAction(JsonPathEvaluateSnippetView jsonPathEvaluateSnippetView) {
+    public FormatJsonViewAction(JsonPathEvaluateSnippetViewJava jsonPathEvaluateSnippetView) {
         super(ACTION_TEXT, ACTION_TEXT, AllIcons.Actions.Expandall);
         this.jsonPathEvaluateSnippetView = jsonPathEvaluateSnippetView;
     }

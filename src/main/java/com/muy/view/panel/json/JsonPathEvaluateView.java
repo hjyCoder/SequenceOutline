@@ -30,6 +30,7 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupChooserBuilder;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsActions;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.IdeFocusManager;
@@ -40,7 +41,10 @@ import com.intellij.serialization.ClassUtil;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.JBColor;
-import com.intellij.ui.components.*;
+import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBPanelWithEmptyText;
+import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.components.JBTextArea;
 import com.intellij.ui.components.panels.NonOpaquePanel;
 import com.intellij.ui.popup.PopupState;
 import com.intellij.util.ThrowableRunnable;
@@ -50,6 +54,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
+import com.muy.utils.FieldReflectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,6 +63,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.*;
+import java.util.function.Supplier;
 
 
 /**
@@ -107,13 +113,19 @@ public abstract class JsonPathEvaluateView extends SimpleToolWindowPanel impleme
 
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
                 if (psiFile != null) {
+                    // com.intellij.jsonpath.JsonPathCompletionContributor.JsonKeysCompletionProvider.addCompletions 被使用的地方
                     // JsonPathEvaluateManager.JSON_PATH_EVALUATE_SOURCE_KEY 这个key很重要，与后面提示获取json文件强关联
-                    psiFile.putUserData(JsonPathEvaluateManager.JSON_PATH_EVALUATE_EXPRESSION_KEY, true);
-                    psiFile.putUserData(JsonPathEvaluateManager.JSON_PATH_EVALUATE_SOURCE_KEY, () -> getJsonFile());
+                    Key key = FieldReflectUtils.findKey(project, FieldReflectUtils.JSON_PATH_EVALUATE_EXPRESSION_KEY);
+                    if(null != key){
+                        psiFile.putUserData(key, true);
+                    }
+                    key = FieldReflectUtils.findKey(project, FieldReflectUtils.JSON_PATH_EVALUATE_SOURCE_KEY);
+                    if(null != key){
+                        psiFile.putUserData((Key<Supplier>) key, () -> getJsonFile());
+                    }
                 }
                 return editor;
             }
-
         };
 
         searchWrapper = new NonOpaquePanel(){
@@ -486,15 +498,14 @@ public abstract class JsonPathEvaluateView extends SimpleToolWindowPanel impleme
             if(popupState.isRecentlyHidden()){
                 return;
             }
-            JBList historyList = new JBList(getExpressionHistory());
-            showCompletionPopup(searchWrapper, historyList, searchTextField, popupState);
+            showCompletionPopup(searchWrapper, getExpressionHistory(), searchTextField, popupState);
         }
 
         private void showCompletionPopup(JComponent toolbarComponent,
-                                         JList<String> list,
+                                         List<String> list,
                                          EditorTextField textField,
                                          PopupState<JBPopup> popupState) {
-            PopupChooserBuilder<?> builder  = JBPopupFactory.getInstance().createListPopupBuilder(list);
+            PopupChooserBuilder<?> builder  = (PopupChooserBuilder)JBPopupFactory.getInstance().createPopupChooserBuilder(list);
             JBPopup popup = builder
                     .setMovable(false)
                     .setResizable(false)
@@ -502,7 +513,9 @@ public abstract class JsonPathEvaluateView extends SimpleToolWindowPanel impleme
                     .setItemChoosenCallback(new Runnable() {
                         @Override
                         public void run() {
-                            String selectedValue = list.getSelectedValue();
+                            PopupChooserBuilder.PopupComponentAdapter popupListAdapter = (PopupChooserBuilder.PopupComponentAdapter)builder.getChooserComponent();
+                            JList jList = (JList)popupListAdapter.getComponent();
+                            String selectedValue = (String)jList.getSelectedValue();
                             if (selectedValue != null) {
                                 textField.setText(selectedValue);
                                 IdeFocusManager.getGlobalInstance().requestFocus(textField, false);

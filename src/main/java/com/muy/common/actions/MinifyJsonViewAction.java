@@ -8,7 +8,7 @@ import com.intellij.openapi.application.WriteAction;
 import com.intellij.util.ThrowableRunnable;
 import com.muy.common.notification.EditorHintsNotifier;
 import com.muy.common.utils.JsonUtils;
-import com.muy.view.panel.json.JsonPathEvaluateSnippetView;
+import com.muy.view.panel.json.JsonPathEvaluateSnippetViewJava;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -24,9 +24,9 @@ public class MinifyJsonViewAction extends AnAction {
 
     public static final String ACTION_TEXT = "Minify Json";
 
-    private JsonPathEvaluateSnippetView jsonPathEvaluateSnippetView;
+    private JsonPathEvaluateSnippetViewJava jsonPathEvaluateSnippetView;
 
-    public MinifyJsonViewAction(JsonPathEvaluateSnippetView jsonPathEvaluateSnippetView) {
+    public MinifyJsonViewAction(JsonPathEvaluateSnippetViewJava jsonPathEvaluateSnippetView) {
         super(ACTION_TEXT, ACTION_TEXT, AllIcons.Actions.Collapseall);
         this.jsonPathEvaluateSnippetView = jsonPathEvaluateSnippetView;
     }

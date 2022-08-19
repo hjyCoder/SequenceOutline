@@ -2,6 +2,7 @@ package com.muy.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
@@ -53,9 +54,9 @@ public class JacksonUtils {
         // 允许key有单引号
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         // 允许整数以0开头
-        mapper.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
+        mapper.configure(JsonReadFeature.ALLOW_LEADING_ZEROS_FOR_NUMBERS.mappedFeature(), true);
         // 允许字符串中存在回车换行控制符
-        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+        mapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
 
         // 排序需要的关键发属性配置
         mapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
@@ -102,9 +103,9 @@ public class JacksonUtils {
         // 允许key有单引号
         mapperWithNull.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         // 允许整数以0开头
-        mapperWithNull.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
+        mapperWithNull.configure(JsonReadFeature.ALLOW_LEADING_ZEROS_FOR_NUMBERS.mappedFeature(), true);
         // 允许字符串中存在回车换行控制符
-        mapperWithNull.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+        mapperWithNull.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
 
         // 排序需要的关键发属性配置
         mapperWithNull.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);

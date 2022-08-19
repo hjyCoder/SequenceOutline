@@ -1,8 +1,8 @@
 package com.muy.common.notification;
 
 import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
+import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 
 /**
@@ -10,7 +10,6 @@ import com.intellij.notification.NotificationType;
  * @Date 2022/5/8 6:34 PM
  */
 public class SequenceOutlineNotifier {
-    private static final NotificationGroup NOTIFICATION_GROUP = new NotificationGroup("SequenceOutline Information", NotificationDisplayType.BALLOON, false);
 
     private SequenceOutlineNotifier() {
     }
@@ -19,7 +18,8 @@ public class SequenceOutlineNotifier {
         if (null == content) {
             content = "";
         }
-        final Notification notification = NOTIFICATION_GROUP.createNotification("SequenceOutline info", content, NotificationType.INFORMATION, null);
+        NotificationGroup notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("SequenceOutlineNotifier");
+        final Notification notification = notificationGroup.createNotification("SequenceOutline info", content, NotificationType.INFORMATION);
         notification.notify(null);
     }
 
@@ -27,7 +27,8 @@ public class SequenceOutlineNotifier {
         if (null == content) {
             content = "";
         }
-        final Notification notification = NOTIFICATION_GROUP.createNotification("SequenceOutline Error", content, NotificationType.ERROR, null);
+        NotificationGroup notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("SequenceOutlineNotifier");
+        final Notification notification = notificationGroup.createNotification("SequenceOutline Error", content, NotificationType.ERROR);
         notification.notify(null);
     }
 }

@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.util.ui.JBUI;
 import com.muy.common.actions.CompareJsonDiffActionClick;
 import com.muy.common.actions.CompareJsonDiffAllSortActionClick;
-import com.muy.view.panel.json.JsonPathEvaluateSnippetView;
+import com.muy.view.panel.json.JsonPathEvaluateSnippetViewJava;
 
 import javax.swing.*;
 
@@ -19,17 +19,18 @@ public class PanelCompare extends JSplitPane {
 
     private Project project;
 
-    private JsonPathEvaluateSnippetView leftEditor;
+    private JsonPathEvaluateSnippetViewJava leftEditor;
 
-    private JsonPathEvaluateSnippetView rightEditor;
+    private JsonPathEvaluateSnippetViewJava rightEditor;
 
+//    private JsonPathEvaluateSnippetView rightEditor;
 
     public PanelCompare(Project project){
         this.project = project;
 
-        rightEditor = new JsonPathEvaluateSnippetView(project);
+        rightEditor = new JsonPathEvaluateSnippetViewJava(project);
 
-        leftEditor = new JsonPathEvaluateSnippetView(project);
+        leftEditor = new JsonPathEvaluateSnippetViewJava(project);
 
         setContinuousLayout(true);
         setResizeWeight(WINDOW_WEIGHT);
@@ -49,5 +50,6 @@ public class PanelCompare extends JSplitPane {
 
     public Editor getRightEditor() {
         return rightEditor.getSourceEditor();
+//        return null;
     }
 }

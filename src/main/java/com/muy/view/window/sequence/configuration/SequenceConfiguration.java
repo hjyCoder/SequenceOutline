@@ -1,6 +1,5 @@
 package com.muy.view.window.sequence.configuration;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
@@ -29,6 +28,6 @@ public class SequenceConfiguration extends ProjectConfiguration<SequenceConfigur
     private List<TreeNodeModelSequence> entrances = new LinkedList<>();
 
     public static SequenceConfiguration getInstance(Project project) {
-        return ServiceManager.getService(project, SequenceConfiguration.class);
+        return project.getService(SequenceConfiguration.class);
     }
 }

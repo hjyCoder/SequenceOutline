@@ -1,6 +1,7 @@
 package com.muy.view.component;
 
 import com.google.common.collect.Maps;
+import com.intellij.openapi.components.ComponentManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -54,7 +55,9 @@ public class SequenceOutlineComponent implements ContentManagerListener {
      * @return
      */
     public static SequenceOutlineComponent getInstance(Project project) {
-        return ServiceManager.getService(project, SequenceOutlineComponent.class);
+        return project.getService(SequenceOutlineComponent.class);
+//        return ComponentManager.getService(SequenceOutlineComponent.class):
+//        return ServiceManager.getService(project, SequenceOutlineComponent.class);
     }
 
     /**
@@ -88,7 +91,7 @@ public class SequenceOutlineComponent implements ContentManagerListener {
      */
     public <T extends AbstractSequenceOutlineSetTab> Content createRestClientContentPanel(Class<T> tabClass, Project project) {
         try {
-            AbstractSequenceOutlineSetTab toolSetTab = tabClass.newInstance();
+            AbstractSequenceOutlineSetTab toolSetTab = tabClass.getDeclaredConstructor().newInstance();
             toolSetTab.setProject(project);
             Content content = ContentFactory.SERVICE.getInstance().createContent(toolSetTab.panelShow(), toolSetTab.tabName(), false);
             content.setCloseable(false);

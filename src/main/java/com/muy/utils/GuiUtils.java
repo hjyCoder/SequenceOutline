@@ -64,7 +64,7 @@ public class GuiUtils {
     }
 
     public static Dimension enlargeWidth(Dimension preferredSize, double factor) {
-        int enlargedWidth = new Double(preferredSize.width * factor).intValue();
+        int enlargedWidth = Double.valueOf(preferredSize.width * factor).intValue();
         return new Dimension(enlargedWidth, preferredSize.height);
     }
 

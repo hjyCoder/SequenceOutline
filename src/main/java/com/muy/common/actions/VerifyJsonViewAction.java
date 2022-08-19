@@ -8,7 +8,7 @@ import com.intellij.openapi.application.WriteAction;
 import com.intellij.util.ThrowableRunnable;
 import com.muy.common.notification.EditorHintsNotifier;
 import com.muy.common.utils.JsonUtils;
-import com.muy.view.panel.json.JsonPathEvaluateSnippetView;
+import com.muy.view.panel.json.JsonPathEvaluateSnippetViewJava;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -27,10 +27,10 @@ public class VerifyJsonViewAction extends AnAction {
 
     public static final String ACTION_TEXT = "Verify Json";
 
-    private JsonPathEvaluateSnippetView jsonPathEvaluateSnippetView;
+    private JsonPathEvaluateSnippetViewJava jsonPathEvaluateSnippetView;
 
 
-    public VerifyJsonViewAction(JsonPathEvaluateSnippetView jsonPathEvaluateSnippetView){
+    public VerifyJsonViewAction(JsonPathEvaluateSnippetViewJava jsonPathEvaluateSnippetView){
         super(VALID_JSON_MSG, ACTION_TEXT, AllIcons.Actions.SetDefault);
         this.jsonPathEvaluateSnippetView = jsonPathEvaluateSnippetView;
     }

@@ -43,7 +43,7 @@ import java.awt.event.MouseEvent;
  * @Author jiyanghuang
  * @Date 2022/8/7 13:50
  */
-public class JsonPathEvaluateSnippetView extends JsonPathEvaluateView{
+public class JsonPathEvaluateSnippetViewJava extends JsonPathEvaluateView{
 
     private Project project;
 
@@ -54,7 +54,7 @@ public class JsonPathEvaluateSnippetView extends JsonPathEvaluateView{
 
     private ActionPopupMenu actionPopupMenu;
 
-    public JsonPathEvaluateSnippetView(Project project){
+    public JsonPathEvaluateSnippetViewJava(Project project){
         super(project);
         this.project = project;
 
@@ -80,7 +80,7 @@ public class JsonPathEvaluateSnippetView extends JsonPathEvaluateView{
         sourceEditor.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void documentChanged(@NotNull DocumentEvent event) {
-                expressionHighlightingQueue.queue(Update.create(JsonPathEvaluateSnippetView.this, new Runnable() {
+                expressionHighlightingQueue.queue(Update.create(JsonPathEvaluateSnippetViewJava.this, new Runnable() {
                     @Override
                     public void run() {
                         resetExpressionHighlighting();
@@ -113,7 +113,7 @@ public class JsonPathEvaluateSnippetView extends JsonPathEvaluateView{
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(SwingUtilities.isRightMouseButton(e)){
-                    actionPopupMenu.getComponent().show(JsonPathEvaluateSnippetView.this, e.getX(), e.getY());
+                    actionPopupMenu.getComponent().show(JsonPathEvaluateSnippetViewJava.this, e.getX(), e.getY());
                 }
             }
         });

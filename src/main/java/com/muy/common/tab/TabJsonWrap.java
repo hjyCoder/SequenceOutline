@@ -1,7 +1,7 @@
 package com.muy.common.tab;
 
 import com.intellij.openapi.project.Project;
-import com.muy.view.panel.json.JsonPathEvaluateSnippetView;
+import com.muy.view.panel.json.JsonPathEvaluateSnippetViewJava;
 
 import javax.swing.*;
 
@@ -11,11 +11,11 @@ import javax.swing.*;
  */
 public class TabJsonWrap extends MRTabWrap {
 
-    private JsonPathEvaluateSnippetView jsonView;
+    private JsonPathEvaluateSnippetViewJava jsonView;
 
     public TabJsonWrap(Project project, int index, String title, JTabbedPane tabbedPane, String jsonContent) {
         super(project, index, title, tabbedPane, null);
-        jsonView = new JsonPathEvaluateSnippetView(project);
+        jsonView = new JsonPathEvaluateSnippetViewJava(project);
         updateJComponent(jsonView);
         fillSource(jsonContent);
     }

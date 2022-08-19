@@ -1,6 +1,7 @@
 package com.muy.action;
 
 import com.alibaba.fastjson.JSON;
+import com.intellij.jsonpath.ui.JsonPathEvaluateManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -13,6 +14,8 @@ import com.muy.domain.bean.invoketree.TreeNodeModel;
 import com.muy.utils.ClipboardUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
+
 /**
  * @Author jiyanghuang
  * @Date 2022/7/4 23:30
@@ -23,6 +26,9 @@ public class JavaMethodIdentityAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
+        JsonPathEvaluateManager jsonPathEvaluateManager = JsonPathEvaluateManager.getInstance(event.getProject());
+        Field[] fields = jsonPathEvaluateManager.getClass().getFields();
+
         PsiElement psiElement = event.getData(CommonDataKeys.PSI_ELEMENT);
         if (!(psiElement instanceof PsiMethod)) {
             return;

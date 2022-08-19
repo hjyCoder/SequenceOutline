@@ -9,7 +9,7 @@ import com.intellij.util.ThrowableRunnable;
 import com.muy.common.notification.EditorHintsNotifier;
 import com.muy.common.utils.JsonUtils;
 import com.muy.utils.JacksonUtils;
-import com.muy.view.panel.json.JsonPathEvaluateSnippetView;
+import com.muy.view.panel.json.JsonPathEvaluateSnippetViewJava;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -24,10 +24,10 @@ public class SortIncludeListJsonViewAction extends AnAction {
 
     public static final String ACTION_TEXT = "Sort Json Include List";
 
-    private JsonPathEvaluateSnippetView jsonPathEvaluateSnippetView;
+    private JsonPathEvaluateSnippetViewJava jsonPathEvaluateSnippetView;
 
 
-    public SortIncludeListJsonViewAction(JsonPathEvaluateSnippetView jsonPathEvaluateSnippetView) {
+    public SortIncludeListJsonViewAction(JsonPathEvaluateSnippetViewJava jsonPathEvaluateSnippetView) {
         super(ACTION_TEXT, ACTION_TEXT, AllIcons.ObjectBrowser.Sorted);
         this.jsonPathEvaluateSnippetView = jsonPathEvaluateSnippetView;
     }
