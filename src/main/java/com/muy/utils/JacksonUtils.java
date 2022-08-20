@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.intellij.openapi.diagnostic.Logger;
+import com.muy.common.notification.SequenceOutlineNotifier;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -710,7 +711,7 @@ public class JacksonUtils {
             sortMapValue(map);
             return mapper.writeValueAsString(map);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            SequenceOutlineNotifier.notifyError(String.format("%s, msg = %s", ex.getClass(), ex.getMessage()));
             return json;
         }
     }
@@ -728,7 +729,7 @@ public class JacksonUtils {
                 primitiveSort(objectList);
                 return mapper.writeValueAsString(objectList);
             } catch (Exception exc) {
-                ex.printStackTrace();
+                SequenceOutlineNotifier.notifyError(String.format("%s, msg = %s", exc.getClass(), exc.getMessage()));
                 return json;
             }
         }
@@ -743,10 +744,12 @@ public class JacksonUtils {
                 List listT = (List) v;
                 if (CollectionUtils.isNotEmpty(listT)) {
                     Object obj = listT.get(0);
-                    if (obj.getClass().isPrimitive()) {
+                    if (obj instanceof Comparable) {
                         primitiveSort(listT);
                     } else if (obj instanceof Map) {
                         sortListValueMap(listT);
+                    }else {
+                        listT.stream().sorted();
                     }
                 }
             } else if (v instanceof Map) {

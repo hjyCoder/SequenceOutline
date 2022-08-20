@@ -115,14 +115,13 @@ public abstract class JsonPathEvaluateView extends SimpleToolWindowPanel impleme
                 if (psiFile != null) {
                     // com.intellij.jsonpath.JsonPathCompletionContributor.JsonKeysCompletionProvider.addCompletions 被使用的地方
                     // JsonPathEvaluateManager.JSON_PATH_EVALUATE_SOURCE_KEY 这个key很重要，与后面提示获取json文件强关联
-                    Key key = FieldReflectUtils.findKey(project, FieldReflectUtils.JSON_PATH_EVALUATE_EXPRESSION_KEY);
-                    if(null != key){
-                        psiFile.putUserData(key, true);
-                    }
-                    key = FieldReflectUtils.findKey(project, FieldReflectUtils.JSON_PATH_EVALUATE_SOURCE_KEY);
-                    if(null != key){
-                        psiFile.putUserData((Key<Supplier>) key, () -> getJsonFile());
-                    }
+                    FieldReflectUtils.findKey(project, FieldReflectUtils.JSON_PATH_EVALUATE_EXPRESSION_KEY, (k) -> {
+                        psiFile.putUserData(k, true);
+                    });
+
+                    FieldReflectUtils.findKey(project, FieldReflectUtils.JSON_PATH_EVALUATE_SOURCE_KEY, (k) -> {
+                        psiFile.putUserData((Key<Supplier>) k, () -> getJsonFile());
+                    });
                 }
                 return editor;
             }
@@ -139,8 +138,10 @@ public abstract class JsonPathEvaluateView extends SimpleToolWindowPanel impleme
         resultWrapper = new JBPanelWithEmptyText(new BorderLayout());
         resultLabel = new JBLabel(JsonBundle.message("jsonpath.evaluate.result"));
         resultEditor = initJsonEditor("result.json", true, EditorKind.PREVIEW);
-// todo
-        resultEditor.putUserData(JsonPathEvaluateManager.JSON_PATH_EVALUATE_RESULT_KEY, true);
+
+        FieldReflectUtils.findKey(project, FieldReflectUtils.JSON_PATH_EVALUATE_RESULT_KEY, (k) -> {
+            resultEditor.putUserData(k, true);
+        });
         resultEditor.setBorder(JBUI.Borders.customLine(JBColor.border(), 1, 0, 0, 0));
         resultLabel.setBorder(JBUI.Borders.empty(3, 6));
         resultWrapper.getEmptyText().setText(JsonBundle.message("jsonpath.evaluate.no.result"));

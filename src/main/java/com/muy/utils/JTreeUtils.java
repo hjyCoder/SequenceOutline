@@ -2,7 +2,6 @@ package com.muy.utils;
 
 import com.intellij.openapi.util.Key;
 import com.intellij.ui.AnimatedIcon;
-import com.intellij.ui.ClientProperty;
 import com.intellij.ui.TreeSpeedSearch;
 import com.muy.common.tree.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -82,10 +81,9 @@ public class JTreeUtils {
         // 快速搜索
         new TreeSpeedSearch(tree);
         // 用于loading的关键配置
-        Key key = FieldReflectUtils.treeLoading();
-        if(null != key){
-            ClientProperty.put(tree, Key.create(ANIMATION_IN_RENDERER_ALLOWED_KEY), true);
-        }
+        FieldReflectUtils.treeLoading((k) -> {
+            tree.putClientProperty(k, true);
+        });
 //        ClientProperty.put(tree, AUTO_EXPAND_ALLOWED, false);
 //        ClientProperty.put(tree, Key.create(SHRINK_LONG_RENDERER_KEY), true);
 

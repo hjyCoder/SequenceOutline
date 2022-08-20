@@ -19,7 +19,7 @@ public class SequenceOutlineNotifier {
             content = "";
         }
         NotificationGroup notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("SequenceOutlineNotifier");
-        final Notification notification = notificationGroup.createNotification("SequenceOutline info", content, NotificationType.INFORMATION);
+        final Notification notification = notificationGroup.createNotification(content, NotificationType.INFORMATION);
         notification.notify(null);
     }
 
@@ -28,7 +28,7 @@ public class SequenceOutlineNotifier {
             content = "";
         }
         NotificationGroup notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("SequenceOutlineNotifier");
-        final Notification notification = notificationGroup.createNotification("SequenceOutline Error", content, NotificationType.ERROR);
+        final Notification notification = notificationGroup.createNotification(content, NotificationType.ERROR);
         notification.notify(null);
     }
 }
