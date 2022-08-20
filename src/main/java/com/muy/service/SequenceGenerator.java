@@ -53,22 +53,22 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
         topStack = new MapStack<TreeInvokeModel>(TreeInvokeModel::getUriMd5);
     }
 
-    public TreeInvokeModel generate(PsiElement psiElement) {
-        if (psiElement instanceof PsiMethod)
-            return generate((PsiMethod) psiElement);
-        else if (psiElement instanceof PsiLambdaExpression) {
-            return generate((PsiLambdaExpression) psiElement);
-        } else {
-            LOGGER.warn("unsupported " + psiElement.getText());
-        }
+//    public TreeInvokeModel generate(PsiElement psiElement) {
+//        if (psiElement instanceof PsiMethod)
+//            return generate((PsiMethod) psiElement);
+//        else if (psiElement instanceof PsiLambdaExpression) {
+//            return generate((PsiLambdaExpression) psiElement);
+//        } else {
+//            LOGGER.warn("unsupported " + psiElement.getText());
+//        }
+//
+//        return null;
+//    }
 
-        return null;
-    }
-
-    public TreeInvokeModel generate(PsiMethod psiMethod) {
+    public TreeInvokeModel generate(PsiMethod psiMethod, boolean superInvoke) {
         try{
             if (psiMethod.getLanguage().equals(JavaLanguage.INSTANCE)) {
-                return generateJava(psiMethod);
+                return generateJava(psiMethod, superInvoke);
             } else {
 //            return topStack;
                 return null;
@@ -86,7 +86,7 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
      * @param psiMethod Java method
      * @return CallStack
      */
-    private TreeInvokeModel generateJava(PsiMethod psiMethod) {
+    private TreeInvokeModel generateJava(PsiMethod psiMethod, boolean superInvoke) {
         PsiClass containingClass = psiMethod.getContainingClass();
         if (containingClass == null) {
             containingClass = (PsiClass) psiMethod.getParent().getContext();
@@ -94,6 +94,14 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
 
         if (containingClass == null) {
 //            return topStack;
+            return null;
+        }
+
+        /**
+         * 如果是父类方法则直接访问，不用考虑接口找实现
+         */
+        if(superInvoke){
+            psiMethod.accept(this);
             return null;
         }
 
@@ -205,9 +213,10 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
     @Override
     public void visitCallExpression(PsiCallExpression callExpression) {
         super.visitCallExpression(callExpression);
+        boolean superInvoke = SequenceOutlinePsiUtils.superInvoke(callExpression.getText());
         PsiMethod psiMethod = callExpression.resolveMethod();
         findAbstractImplFilter(callExpression, psiMethod);
-        methodCall(psiMethod, SequenceOutlinePsiUtils.findNaviOffset(callExpression));
+        methodCall(psiMethod, SequenceOutlinePsiUtils.findNaviOffset(callExpression), superInvoke);
     }
 
     @Override
@@ -216,7 +225,7 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
         if (resolve instanceof PsiMethod) {
             final PsiMethod psiMethod = (PsiMethod) resolve;
             final int offset = expression.getTextOffset();
-            methodCall(psiMethod, offset);
+            methodCall(psiMethod, offset, false);
         }
         super.visitMethodReferenceExpression(expression);
     }
@@ -343,7 +352,7 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
         }
     }
 
-    private void methodCall(PsiMethod psiMethod, int offset) {
+    private void methodCall(PsiMethod psiMethod, int offset, boolean superInvoke) {
         if (psiMethod == null) {
             return;
         }
@@ -357,7 +366,7 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
             LOGGER.debug("+ depth = " + depth + " method = " + psiMethod.getName());
 //            offsetStack.push(offset);
             // 循环调用生成，显示它不是通过方法调用与退出来实现的
-            generate(psiMethod);
+            generate(psiMethod, superInvoke);
             depth--;
             LOGGER.debug("- depth = " + depth + " method = " + psiMethod.getName());
 //            currentStack = oldStack;

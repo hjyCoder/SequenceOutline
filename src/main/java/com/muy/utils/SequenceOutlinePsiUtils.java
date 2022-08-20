@@ -7,6 +7,7 @@ import com.intellij.psi.util.ClassUtil;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.muy.service.FindLambdaVisitor;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -306,7 +307,7 @@ public class SequenceOutlinePsiUtils {
      */
     public static boolean isInheritor(String fClassName, String fClassNameParent, Project project) {
         if (fClassName.equals(fClassNameParent)) {
-            return false;
+            return true;
         }
         PsiClass psiClass = findPsiClass(project, fClassName);
         PsiClass psiClassParent = findPsiClass(project, fClassNameParent);
@@ -341,5 +342,12 @@ public class SequenceOutlinePsiUtils {
             return findLambdaVisitor.getFindResult().get(0);
         }
         return findLambdaVisitor.getFindResult().get(pos);
+    }
+
+    public static boolean superInvoke(String text) {
+        if (StringUtils.isBlank(text)) {
+            return false;
+        }
+        return text.startsWith("super.") || text.contains(".super.");
     }
 }

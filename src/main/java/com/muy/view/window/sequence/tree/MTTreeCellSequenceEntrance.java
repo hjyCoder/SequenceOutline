@@ -113,7 +113,7 @@ public class MTTreeCellSequenceEntrance implements MTTreeCell {
                     SequenceGenerator sequenceGenerator = new SequenceGenerator(paramsScan);
                     SequenceParams paramsShow = SequenceParams.convertToSequenceParams(treeNodeModelSequence.getFilterConfigShow(), psiMethod);
                     sequenceGenerator.setParamsStack(paramsShow);
-                    sequenceGenerator.generate(psiMethod);
+                    sequenceGenerator.generate(psiMethod, false);
                     TreeInvokeModel root = sequenceGenerator.getRoot();
                     if(null != root){
                         treeNodeModelSequence.setRoot(root);
