@@ -30,6 +30,9 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
 
     private MapStack<TreeInvokeModel> topStack;
 
+    private MapStack<TreeInvokeModel> scanStack;
+
+
     private final SequenceParams params;
 
     @Getter
@@ -41,6 +44,9 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
 
     private int depth;
 
+    @Setter
+    private int maxDepth;
+
     private final ImplementationFinder implementationFinder = new ImplementationFinder();
 
     /**
@@ -48,9 +54,15 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
      */
     private Map<Integer, AtomicInteger> rowColIndexMap = Maps.newConcurrentMap();
 
+    /**
+     * 当前遍历多少个方法
+     */
+    private AtomicInteger visitMethodCount = new AtomicInteger(0);
+
     public SequenceGenerator(SequenceParams params) {
         this.params = params;
         topStack = new MapStack<TreeInvokeModel>(TreeInvokeModel::getUriMd5);
+        scanStack = new MapStack<TreeInvokeModel>(TreeInvokeModel::getUriMd5);
     }
 
 //    public TreeInvokeModel generate(PsiElement psiElement) {
@@ -175,12 +187,22 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
         return false;
     }
 
+    private boolean methodAcceptScanStack(PsiElement psiElement) {
+        if (psiElement instanceof PsiMethod) {
+            PsiMethod method = (PsiMethod) psiElement;
+            if (params.getMethodFilter().allow(method)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void visitMethod(PsiMethod psiMethod) {
         TreeNodeModel treeNodeModel = TreeNodeModel.of(psiMethod);
         TreeInvokeModel treeInvokeModel = TreeInvokeModel.of(treeNodeModel);
         // 判断是否有循环
-        boolean recursive = topStack.containsItem(treeInvokeModel);
+        boolean recursive = scanStack.containsItem(treeInvokeModel);
         if(recursive){
             treeInvokeModel.getTreeNodeModel().setMethodType(MethodType.RECURSIVE_METHOD.getType());
         }
@@ -196,9 +218,15 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
             fillRowCol(treeInvokeModel, row);
             topStack.push(treeInvokeModel);
         }
+        // 扫描判断只是负责压栈，退栈，记录调用层数
+        if(methodAcceptScanStack(psiMethod)){
+            scanStack.push(treeInvokeModel);
+        }
         // 不是循环时再往下遍历
         if(!recursive){
-            super.visitMethod(psiMethod);
+            if(scanStack.size() <= maxDepth){
+                super.visitMethod(psiMethod);
+            }
         }
         if (methodAcceptStack(psiMethod)) {
             TreeInvokeModel stackBack = topStack.pop();
@@ -207,6 +235,10 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
             } else {
                 root = stackBack;
             }
+        }
+        // 扫描判断只是负责压栈，退栈，记录调用层数
+        if(methodAcceptScanStack(psiMethod)){
+            TreeInvokeModel stackBack = scanStack.pop();
         }
     }
 
