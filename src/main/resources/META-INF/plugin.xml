@@ -48,7 +48,7 @@
         <projectService serviceInterface="com.muy.view.window.sequence.configuration.SequenceConfiguration"
                         serviceImplementation="com.muy.view.window.sequence.configuration.SequenceConfiguration"/>
 
-        <notificationGroup id="SequenceOutlineNotifier" displayType="BALLOON" hideFromSettings="true"/>
+        <notificationGroup id="SequenceOutlineNotifier" displayType="BALLOON" hideFromSettings="false"/>
     </extensions>
 
     <actions>

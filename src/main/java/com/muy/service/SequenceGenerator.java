@@ -445,17 +445,37 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
         treeInvokeModel.setCol(atomicInteger.getAndIncrement());
     }
 
+    /**
+     * org.apache.ibatis.cache.CacheKey
+     * 实现类内部生成对象如此形成死循环
+     */
     private class ImplementationFinder extends JavaElementVisitor {
+
+        /**
+         * 解决死循环
+         */
+        private MapStack<PsiClass> findScanStack = new MapStack<PsiClass>(PsiClass::getQualifiedName);
 
         @Override
         public void visitClass(PsiClass aClass) {
             for (PsiClass psiClass : aClass.getSupers()) {
-                if (!SequenceOutlinePsiUtils.isExternal(psiClass))
-                    psiClass.accept(this);
+                if (!SequenceOutlinePsiUtils.isExternal(psiClass)) {
+                    boolean recursive = findScanStack.containsItem(psiClass);
+                    findScanStack.push(psiClass);
+                    if (!recursive) {
+                        psiClass.accept(this);
+                    }
+                    findScanStack.pop();
+                }
             }
 
             if (!SequenceOutlinePsiUtils.isAbstract(aClass) && !SequenceOutlinePsiUtils.isExternal(aClass)) {
-                super.visitClass(aClass);
+                boolean recursive = findScanStack.containsItem(aClass);
+                findScanStack.push(aClass);
+                if(!recursive){
+                    super.visitClass(aClass);
+                }
+                findScanStack.pop();
             }
         }
 
