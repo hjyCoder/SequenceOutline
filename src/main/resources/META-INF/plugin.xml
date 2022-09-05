@@ -63,10 +63,12 @@
                    popup="true"
                    icon="fileTypes/java.svg">
                 <action id="com.muy.action.JavaMethodIdentityAction"
-                        class="com.muy.action.JavaMethodIdentityAction" text="JavaMethodIdentity" description="JavaMethodIdentity" icon="nodes/methodReference.svg"/>
+                        class="com.muy.action.JavaMethodIdentityAction" text="Copy JavaMethodIdentity" description="JavaMethodIdentity" icon="actions/copy.svg"/>
             </group>
 
         </group>
+
+        <action id="com.muy.common.actions.DialogUpdateJsonAction" class="com.muy.common.actions.DialogUpdateJsonAction" text="UpdateJson" description="UpdateJson"/>
 
         <!-- SequenceOutline -->
     </actions>

@@ -26,6 +26,7 @@ import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.components.BorderLayoutPanel;
 import com.intellij.util.ui.update.MergingUpdateQueue;
 import com.intellij.util.ui.update.Update;
+import com.intellij.xml.breadcrumbs.BreadcrumbsXmlWrapper;
 import com.muy.common.actions.*;
 import com.muy.common.utils.JsonUtils;
 import com.muy.utils.ActionUtil;
@@ -117,6 +118,8 @@ public class JsonPathEvaluateSnippetViewJava extends JsonPathEvaluateView{
                 }
             }
         });
+        BreadcrumbsXmlWrapper wrapper = new BreadcrumbsXmlWrapper(sourceEditor);
+        sourcePanel.addToBottom(wrapper);
     }
 
     public void setSource(String json) {
@@ -162,6 +165,7 @@ public class JsonPathEvaluateSnippetViewJava extends JsonPathEvaluateView{
     public void dispose() {
         super.dispose();
         EditorFactory.getInstance().releaseEditor(sourceEditor);
+        EditorFactory.getInstance().releaseEditor(resultEditor);
     }
 
     public Editor getSourceEditor() {

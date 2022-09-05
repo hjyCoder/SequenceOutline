@@ -38,12 +38,13 @@ public class JavaMethodIdentityAction extends AnAction {
         try {
             TreeNodeModel treeNodeModel = TreeNodeModel.of(psiMethod);
             ClipboardUtils.fillStringToClip(JSON.toJSONString(treeNodeModel));
+            SequenceOutlineNotifier.notify("Copy JavaMethodIdentity Success");
         } catch (SequenceOutlineException sequenceOutlineException) {
             if (null != sequenceOutlineException.getResponseCode()) {
-                SequenceOutlineNotifier.notify(sequenceOutlineException.getResponseCode().getDesc());
+                SequenceOutlineNotifier.notifyError(sequenceOutlineException.getResponseCode().getDesc());
                 return;
             }
-            SequenceOutlineNotifier.notify("error");
+            SequenceOutlineNotifier.notifyError("error");
         } catch (Exception ex) {
             SequenceOutlineNotifier.notify(ex.getMessage());
             LOGGER.error(String.format("JavaMethodIdentityAction error"), ex);

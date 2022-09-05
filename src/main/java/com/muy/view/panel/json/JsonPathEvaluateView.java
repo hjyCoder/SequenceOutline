@@ -23,6 +23,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.EditorKind;
 import com.intellij.openapi.editor.ex.EditorEx;
+import com.intellij.openapi.editor.impl.EditorImpl;
 import com.intellij.openapi.keymap.KeymapUtil;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
@@ -79,7 +80,7 @@ public abstract class JsonPathEvaluateView extends SimpleToolWindowPanel impleme
     protected JBPanelWithEmptyText resultWrapper;
 
     private JBLabel resultLabel;
-    private Editor resultEditor;
+    protected Editor resultEditor;
 
     private JBTextArea errorOutputArea;
     private JScrollPane errorOutputContainer;
@@ -241,7 +242,19 @@ public abstract class JsonPathEvaluateView extends SimpleToolWindowPanel impleme
         Document document = PsiDocumentManager.getInstance(project).getDocument(sourceFile);
         Editor editor = EditorFactory.getInstance().createEditor(document, project, sourceVirtualFile, isViewer, kind);
         editor.getSettings().setLineNumbersShown(false);
+        changeEditorPopupMenu(editor);
         return editor;
+    }
+
+    protected void changeEditorPopupMenu(Editor editor){
+        try{
+            if(editor instanceof EditorImpl){
+                EditorImpl editorImpl = (EditorImpl)editor;
+                editorImpl.installPopupHandler(new MRJsonPopupHandler());
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     void setExpression(String jsonPathExpr) {
