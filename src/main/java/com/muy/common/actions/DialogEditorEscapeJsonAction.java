@@ -11,6 +11,7 @@ import com.muy.common.dialog.DialogJson;
 import com.muy.common.notification.SequenceOutlineNotifier;
 import com.muy.common.utils.JsonUtils;
 import com.muy.utils.JsonCommonUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.actionSystem.CommonDataKeys.EDITOR;
@@ -35,12 +36,11 @@ public class DialogEditorEscapeJsonAction extends AnAction {
         if(null == editor){
             return;
         }
-        if (!editor.getSelectionModel().hasSelection(true)) {
-            if (CopyAction.isSkipCopyPasteForEmptySelection()) {
-                return;
-            }
-        }
         String text = editor.getSelectionModel().getSelectedText();
+        if(StringUtils.isBlank(text)){
+            SequenceOutlineNotifier.notifyError("select text is blank");
+            return;
+        }
         boolean[] containQuotation = {false};
         if (text.startsWith("\"") && text.endsWith("\"")) {
             containQuotation[0] = true;

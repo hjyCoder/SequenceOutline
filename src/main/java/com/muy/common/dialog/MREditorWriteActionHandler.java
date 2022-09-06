@@ -9,7 +9,9 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler;
 import com.intellij.openapi.editor.actions.CopyAction;
+import com.muy.common.notification.SequenceOutlineNotifier;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,10 +34,10 @@ public class MREditorWriteActionHandler extends EditorActionHandler {
      */
     @Override
     protected void doExecute(@NotNull Editor editor, @Nullable Caret caret, DataContext dataContext) {
-        if (!editor.getSelectionModel().hasSelection(true)) {
-            if (CopyAction.isSkipCopyPasteForEmptySelection()) {
-                return;
-            }
+        String text = editor.getSelectionModel().getSelectedText();
+        if(StringUtils.isBlank(text)){
+            SequenceOutlineNotifier.notifyError("select text is blank");
+            return;
         }
         ApplicationManager.getApplication().runWriteAction(() -> {
             FeatureUsageTracker.getInstance().triggerFeatureUsed("editing.copy.line");
