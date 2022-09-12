@@ -27,6 +27,9 @@ public class GuiUtils {
 
     public static final Icon PLANT_UML = loadIcon("plantUml.png");
 
+    public static final Icon DATE = loadIcon("date.png");
+
+
     public static Icon loadIcon(String iconFilename) {
         return IconLoader.findIcon(ICON_FOLDER + iconFilename, GuiUtils.class);
     }
