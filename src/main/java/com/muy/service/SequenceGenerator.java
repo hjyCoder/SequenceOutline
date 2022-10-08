@@ -143,12 +143,7 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
                 psiMethod.accept(this);
             }
         } else {
-            // resolve variable initializer
-            if (params.isSmartInterface() && !SequenceOutlinePsiUtils.isExternal(containingClass)) {
-                containingClass.accept(implementationFinder);
-            }
-
-            psiMethod.accept(this);
+            methodAccept(psiMethod);
         }
 //        return topStack;
         return null;
@@ -170,8 +165,11 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
             PsiMethod method = (PsiMethod) psiElement;
             if (params.getMethodFilter().allow(method)) {
                 PsiClass containingClass = (method).getContainingClass();
-                if (params.isSmartInterface() && containingClass != null && !SequenceOutlinePsiUtils.isExternal(containingClass))
-                    containingClass.accept(implementationFinder);
+                if(params.isNotExternal()){
+                    if(!SequenceOutlinePsiUtils.isExternal(containingClass)){
+                        containingClass.accept(implementationFinder);
+                    }
+                }
                 method.accept(this);
             }
         }
@@ -390,6 +388,12 @@ public class SequenceGenerator extends JavaRecursiveElementVisitor {
         }
         if (!params.getMethodFilter().allow(psiMethod)) {
             return;
+        } else {
+            if (params.isNotExternal()) {
+                if (SequenceOutlinePsiUtils.isExternal(psiMethod.getContainingClass())) {
+                    return;
+                }
+            }
         }
 
         if (depth < params.getMaxDepth() - 1) {

@@ -114,12 +114,42 @@ public class GoToSourceUtils {
                 .submit(NonUrgentExecutor.getInstance());
     }
 
+    public static void openLineInEditor(Project project, String className, int lineNum) {
+
+        ReadAction
+                .nonBlocking(() -> {
+                    final PsiClass psiClass = ClassUtil.findPsiClass(psiManager(project), className);
+                    if (psiClass == null) {
+                        return null;
+                    }
+
+
+                    VirtualFile virtualFile = SequenceOutlinePsiUtils.findVirtualFile(psiClass);
+
+                    return new Pair<>(virtualFile, lineNum);
+                })
+                .finishOnUiThread(ModalityState.defaultModalityState(), p -> {
+                    if (p != null)
+                        openLineInEditor(project, p.first, p.second);
+                })
+                .inSmartMode(project)
+                .submit(NonUrgentExecutor.getInstance());
+    }
+
     protected static void openInEditor(Project project, VirtualFile virtualFile, int offset) {
         if (virtualFile == null)
             return;
 
         FileEditorManager.getInstance(project).openTextEditor(new OpenFileDescriptor(project,
                 virtualFile, offset), true);
+    }
+
+    protected static void openLineInEditor(Project project, VirtualFile virtualFile, int line) {
+        if (virtualFile == null)
+            return;
+
+        FileEditorManager.getInstance(project).openTextEditor(new OpenFileDescriptor(project,
+                virtualFile, line, 0), true);
     }
 
     public static PsiManager psiManager(Project project){

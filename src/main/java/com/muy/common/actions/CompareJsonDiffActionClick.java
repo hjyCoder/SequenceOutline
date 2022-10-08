@@ -17,10 +17,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.impl.DocumentImpl;
-import com.intellij.openapi.fileChooser.FileChooser;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.muy.common.utils.JacksonUtils;
 import com.muy.common.utils.JsonUtils;
@@ -29,11 +26,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
-
-import static com.intellij.diff.DiffRequestFactoryImpl.getContentTitle;
-import static com.intellij.diff.DiffRequestFactoryImpl.getTitle;
-import static com.intellij.vcsUtil.VcsUtil.getFilePath;
 
 /**
  * @Author jiyanghuang
@@ -112,26 +104,5 @@ public class CompareJsonDiffActionClick extends CompareFilesAction {
         String sortJson = JacksonUtils.sortJson(jsonContent);
         String prettyJsonString = JsonUtils.formatJson(sortJson);
         return new DocumentContentImpl( project, new DocumentImpl(prettyJsonString), JsonFileType.INSTANCE);
-    }
-
-    private String contentTitle(VirtualFile file) {
-        return getContentTitle(getFilePath(file));
-    }
-
-    private String mainTitle(VirtualFile file1, VirtualFile file2) {
-        FilePath path1 = file1 != null ? getFilePath(file1) : null;
-        FilePath path2 = file2 != null ? getFilePath(file2) : null;
-
-        return getTitle(path1, path2, " vs ");
-    }
-
-    private boolean isJsonVirtualFile(VirtualFile file) {
-        return file != null && file.isValid() && !file.isDirectory() && "json".compareToIgnoreCase(Objects.requireNonNull(file.getExtension())) == 0;
-    }
-
-    private VirtualFile getOtherFile(Project project, VirtualFile file) {
-        FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, true, true, false);
-
-        return FileChooser.chooseFile(descriptor, project, file);
     }
 }

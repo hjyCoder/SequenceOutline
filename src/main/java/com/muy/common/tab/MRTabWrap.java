@@ -19,22 +19,26 @@ public abstract class MRTabWrap {
 
     private JTabbedPane tabbedPane;
 
-    public MRTabWrap(Project project, int index, String title, JTabbedPane tabbedPane, JComponent jComponent) {
+    public MRTabWrap(Project project, int index, String title, JTabbedPane tabbedPane, JComponent jComponent, boolean jbScrollPaneWrap) {
         this.project = project;
         this.index = index;
         this.title = title;
         this.tabbedPane = tabbedPane;
 
         if(null != jComponent){
-            updateJComponent(jComponent);
+            updateJComponent(jComponent, jbScrollPaneWrap);
         }
     }
 
-    public void updateJComponent(JComponent jComponent){
-        JBScrollPane jbScrollPane = new JBScrollPane();
-        jbScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        tabbedPane.add(title, jbScrollPane);
-        jbScrollPane.setViewportView(jComponent);
+    public void updateJComponent(JComponent jComponent, boolean jbScrollPaneWrap){
+        if(jbScrollPaneWrap){
+            JBScrollPane jbScrollPane = new JBScrollPane();
+            jbScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            tabbedPane.add(title, jbScrollPane);
+            jbScrollPane.setViewportView(jComponent);
+        }else{
+            tabbedPane.add(title, jComponent);
+        }
     }
 
     public void selected(){

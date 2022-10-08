@@ -20,6 +20,10 @@ public class SequenceParams {
     private boolean allowRecursion = false;
     private boolean smartInterface = true;
     private boolean notLambda = false;
+    /**
+     * 表示只扫描项目中的类文件
+     */
+    private boolean notExternal = true;
     private final CompositeMethodFilter methodFilter = new CompositeMethodFilter();
     private final InterfaceImplFilter interfaceImplFilter = new InterfaceImplFilter();
 
@@ -42,6 +46,7 @@ public class SequenceParams {
         InterfaceImplFilter interfaceImplFilter = sequenceParams.getInterfaceImplFilter();
         interfaceImplFilter.put("one", new FilterImplementClass(filterConfig.getImplementClassSet()));
         sequenceParams.setNotLambda(BooleanUtils.defaultFalse(filterConfig.getNotLambda()));
+        sequenceParams.setNotExternal(BooleanUtils.defaultTrue(filterConfig.getNotExternal()));
         return sequenceParams;
     }
 }

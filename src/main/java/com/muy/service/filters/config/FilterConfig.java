@@ -30,6 +30,11 @@ public class FilterConfig {
     private Boolean notLambda;
 
     /**
+     * 表示不扫描外部依赖
+     */
+    private Boolean notExternal;
+
+    /**
      * 方法名正则表达式
      */
     private Set<String> methodNamePattern;
@@ -100,6 +105,7 @@ public class FilterConfig {
         filterConfig.setImplementClassSet(config.getImplementClassSet());
         filterConfig.setCallDepth(config.getCallDepth());
         filterConfig.setNotLambda(config.getNotLambda());
+        filterConfig.setNotExternal(config.getNotExternal());
     }
 
 }

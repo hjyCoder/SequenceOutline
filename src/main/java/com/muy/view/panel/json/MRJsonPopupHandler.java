@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.event.EditorMouseEvent;
 import com.intellij.openapi.editor.impl.ContextMenuPopupHandler;
 import com.muy.common.actions.DialogEditorDateAction;
 import com.muy.common.actions.DialogEditorEscapeJsonAction;
+import com.muy.common.actions.MRGotoLineAction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +21,7 @@ public class MRJsonPopupHandler extends ContextMenuPopupHandler {
         DefaultActionGroup actionGroup = new DefaultActionGroup();
         actionGroup.add(new DialogEditorEscapeJsonAction());
         actionGroup.add(new DialogEditorDateAction());
+        actionGroup.add(new MRGotoLineAction());
         return actionGroup;
     }
 }

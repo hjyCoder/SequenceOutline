@@ -16,6 +16,10 @@ public class ReloadSubLocalAction extends AbstractMTTreeCellSelectTreeAction{
         super("ReloadSubLocal", "reload Sub Local", AllIcons.General.Remove, treePanelMark);
     }
 
+    public ReloadSubLocalAction(TreePanelMark treePanelMark, String title, String desc) {
+        super(title, desc, AllIcons.Actions.BuildAutoReloadChanges, treePanelMark);
+    }
+
     @Override
     public void handleSelectTree(DefaultMutableTreeNode mutableTreeNode, MTTreeCell mtTreeCell) {
         mtTreeCell.reloadSubLocal(treePanelMark, mutableTreeNode);

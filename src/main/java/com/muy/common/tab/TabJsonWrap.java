@@ -14,9 +14,9 @@ public class TabJsonWrap extends MRTabWrap {
     private JsonPathEvaluateSnippetViewJava jsonView;
 
     public TabJsonWrap(Project project, int index, String title, JTabbedPane tabbedPane, String jsonContent) {
-        super(project, index, title, tabbedPane, null);
+        super(project, index, title, tabbedPane, null, false);
         jsonView = new JsonPathEvaluateSnippetViewJava(project);
-        updateJComponent(jsonView);
+        updateJComponent(jsonView, false);
         fillSource(jsonContent);
     }
 

@@ -17,6 +17,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * @Author jiyanghuang
@@ -25,6 +27,8 @@ import java.util.List;
 public class SequenceLeft extends AbstractMTTreePanel {
 
     public static final String SHOW_RIGHT_PANEL = "showRightPanel";
+
+    public static final String SHOW_SEQUENCE_ROOT = "showSequenceRoot";
 
     private MRMultiSelect multiSelect;
 
@@ -49,7 +53,12 @@ public class SequenceLeft extends AbstractMTTreePanel {
 
     @Override
     protected void addActions(DefaultActionGroup actionGroup) {
-        multiSelect = new MRMultiSelect(Sets.newHashSet(Pair.of(SHOW_RIGHT_PANEL, (b) -> { handleSelectTree();})), "Config");
+        Set<Pair<String, Consumer<Boolean>>> allItems = Sets.newHashSet();
+        Pair<String, Consumer<Boolean>> rightPanel = Pair.of(SHOW_RIGHT_PANEL, (b) -> { handleSelectTree();});
+        Pair<String, Consumer<Boolean>> sequenceRoot = Pair.of(SHOW_SEQUENCE_ROOT, this::showSequenceRoot);
+        allItems.add(rightPanel);
+        allItems.add(sequenceRoot);
+        multiSelect = new MRMultiSelect(allItems, "Config");
         actionGroup.add(multiSelect);
     }
 
@@ -65,5 +74,9 @@ public class SequenceLeft extends AbstractMTTreePanel {
                 mtTreeCell.treeSelectionListener(jTree(), mutableTreeNodeT, this);
             });
         }
+    }
+
+    public void showSequenceRoot(boolean select){
+        jTree().setRootVisible(select);
     }
 }

@@ -1,7 +1,5 @@
 package com.muy.common.actions;
 
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.gson.JsonNull;
 import com.intellij.diff.DiffDialogHints;
 import com.intellij.diff.DiffManager;
 import com.intellij.diff.actions.CompareFilesAction;
@@ -17,10 +15,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.impl.DocumentImpl;
-import com.intellij.openapi.fileChooser.FileChooser;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.muy.common.utils.JsonUtils;
 import com.muy.utils.JacksonUtils;
@@ -28,12 +23,6 @@ import com.muy.view.panel.PanelCompare;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
-
-import static com.intellij.diff.DiffRequestFactoryImpl.getContentTitle;
-import static com.intellij.diff.DiffRequestFactoryImpl.getTitle;
-import static com.intellij.vcsUtil.VcsUtil.getFilePath;
 
 /**
  * @Author jiyanghuang
@@ -56,6 +45,10 @@ public class CompareJsonDiffAllSortActionClick extends CompareFilesAction {
         getTemplatePresentation().setIcon(AllIcons.Diff.Compare3LeftRight);
     }
 
+    /**
+     * 调用并展示
+     * @param e
+     */
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
@@ -83,6 +76,11 @@ public class CompareJsonDiffAllSortActionClick extends CompareFilesAction {
         return true;
     }
 
+    /**
+     * 提供比较的文件
+     * @param e
+     * @return
+     */
     @Override
     protected DiffRequest getDiffRequest(@NotNull AnActionEvent e) {
         try {
@@ -95,43 +93,9 @@ public class CompareJsonDiffAllSortActionClick extends CompareFilesAction {
         }
     }
 
-    private Map<String, Object> deepSort(Map<?, ?> map) {
-        ImmutableSortedMap.Builder<String, Object> builder = ImmutableSortedMap.naturalOrder();
-
-        map.forEach((k, v) -> {
-            if (v instanceof Map) {
-                builder.put((String) k, deepSort((Map) v));
-            } else {
-                builder.put((String) k, v == null ? JsonNull.INSTANCE : v);
-            }
-        });
-        return builder.build();
-    }
-
     private DiffContent content(String jsonContent, Project project) throws IOException {
         String sortJson = JacksonUtils.sortJsonIncludeList(jsonContent);
         String prettyJsonString = JsonUtils.formatJson(sortJson);
         return new DocumentContentImpl( project, new DocumentImpl(prettyJsonString), JsonFileType.INSTANCE);
-    }
-
-    private String contentTitle(VirtualFile file) {
-        return getContentTitle(getFilePath(file));
-    }
-
-    private String mainTitle(VirtualFile file1, VirtualFile file2) {
-        FilePath path1 = file1 != null ? getFilePath(file1) : null;
-        FilePath path2 = file2 != null ? getFilePath(file2) : null;
-
-        return getTitle(path1, path2, " vs ");
-    }
-
-    private boolean isJsonVirtualFile(VirtualFile file) {
-        return file != null && file.isValid() && !file.isDirectory() && "json".compareToIgnoreCase(Objects.requireNonNull(file.getExtension())) == 0;
-    }
-
-    private VirtualFile getOtherFile(Project project, VirtualFile file) {
-        FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, true, true, false);
-
-        return FileChooser.chooseFile(descriptor, project, file);
     }
 }

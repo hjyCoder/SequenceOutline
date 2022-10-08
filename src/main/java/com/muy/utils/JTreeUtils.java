@@ -1,6 +1,5 @@
 package com.muy.utils;
 
-import com.intellij.openapi.util.Key;
 import com.intellij.ui.AnimatedIcon;
 import com.intellij.ui.TreeSpeedSearch;
 import com.muy.common.tree.*;

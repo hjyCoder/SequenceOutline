@@ -21,4 +21,11 @@ public class BooleanUtils {
         }
         return value;
     }
+
+    public static boolean defaultTrue(Boolean value) {
+        if (null == value) {
+            return true;
+        }
+        return value;
+    }
 }

@@ -16,7 +16,7 @@ public class TabWrapSequenceFilter extends MRTabWrap {
     private SequenceFilter sequenceFilter;
 
     public TabWrapSequenceFilter(Project project, int index, String title, JTabbedPane tabbedPane, SequenceFilter sequenceFilter) {
-        super(project, index, title, tabbedPane, sequenceFilter);
+        super(project, index, title, tabbedPane, sequenceFilter, true);
         this.sequenceFilter = sequenceFilter;
     }
 }
