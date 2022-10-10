@@ -43,7 +43,7 @@ public class SequenceEntrancePanel extends JPanel {
         tabbedPane = new JTabbedPane(JBTabbedPane.TOP);
         tabShowConfig = new TabWrapSequenceFilter(project, 0, "ShowConfig", tabbedPane, new SequenceFilter(FilterConfig.ofDefault(treeNodeModelSequence.getFilterConfigShow())));
         tabScanConfig = new TabWrapSequenceFilter(project, 1, "ScanConfig", tabbedPane, new SequenceFilter(FilterConfig.ofDefault(treeNodeModelSequence.getFilterConfig())));
-        tabJsonWrap = new TabJsonWrap(project, 2, "JsonView", tabbedPane, JacksonUtils.toFormatJSONString(treeNodeModelSequence));
+        tabJsonWrap = new TabJsonWrap(project, 2, "JsonView", tabbedPane, JacksonUtils.toFormatJSONString(treeNodeModelSequence), false);
         add(tabbedPane, BorderLayout.CENTER);
     }
 

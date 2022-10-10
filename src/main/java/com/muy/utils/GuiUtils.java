@@ -29,6 +29,9 @@ public class GuiUtils {
 
     public static final Icon DATE = loadIcon("date.png");
 
+    public static final Icon RUN = loadIcon("history/run.svg");
+    public static final Icon DEBUG = loadIcon("history/debug.svg");
+
 
     public static Icon loadIcon(String iconFilename) {
         return IconLoader.findIcon(ICON_FOLDER + iconFilename, GuiUtils.class);

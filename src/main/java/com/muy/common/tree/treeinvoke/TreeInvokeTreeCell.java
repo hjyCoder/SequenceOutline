@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.muy.common.tree.MTTreeCell;
 import com.muy.common.tree.TreePanelMark;
 import com.muy.common.tree.TreeRightPanelJson;
+import com.muy.common.tree.TreeRightReflectInvokePanelJson;
 import com.muy.common.tree.actions.*;
 import com.muy.common.tree.enums.MethodType;
 import com.muy.common.utils.CheckJsonValidUtils;
@@ -46,7 +47,7 @@ public class TreeInvokeTreeCell implements MTTreeCell<TreeInvokeTreeCell> {
     @Getter
     private TreeNodeModel treeNodeModel;
 
-    private TreeRightPanelJson treeRightPanelJson;
+    private TreeRightReflectInvokePanelJson treeRightPanelJson;
 
     public TreeInvokeTreeCell(Project project, TreeNodeModel treeNodeModel, TreeInvokeModel treeInvokeModel) {
         this.project = project;
@@ -129,7 +130,7 @@ public class TreeInvokeTreeCell implements MTTreeCell<TreeInvokeTreeCell> {
     public void treeSelectionListener(JTree tree, DefaultMutableTreeNode mutableTreeNode, TreePanelMark treePanelMark) {
         try {
             if (null == treeRightPanelJson) {
-                treeRightPanelJson = new TreeRightPanelJson(project, treeNodeModel);
+                treeRightPanelJson = new TreeRightReflectInvokePanelJson(project, treeNodeModel);
             }
             TabContentRightShow tabContentRightShow = SequenceOutlineComponent.getInstance(project).findInstance(TabContentRightShow.class);
             tabContentRightShow.updatePanel(treeRightPanelJson);

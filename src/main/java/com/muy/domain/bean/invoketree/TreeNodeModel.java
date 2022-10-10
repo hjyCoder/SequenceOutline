@@ -51,6 +51,11 @@ public class TreeNodeModel implements Serializable, Cloneable {
      */
     private String encloseMethodSignature;
 
+    /**
+     * 用于反射调用该方法的参数
+     */
+    private String reflectInvokeParam;
+
 
     public String uriMd5Gen() {
         // java://className/methodName~(methodSign)reSign

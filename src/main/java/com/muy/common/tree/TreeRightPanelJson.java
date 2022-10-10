@@ -16,6 +16,6 @@ public class TreeRightPanelJson extends MRTreeRightPanel {
 
     public TreeRightPanelJson(Project project, Object data) {
         super(project);
-        tabJsonWrap = new TabJsonWrap(project, 0, "JsonView", tabbedPane, JacksonUtils.toFormatJSONString(data));
+        tabJsonWrap = new TabJsonWrap(project, 0, "JsonView", tabbedPane, JacksonUtils.toFormatJSONString(data), false);
     }
 }

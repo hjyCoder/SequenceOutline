@@ -71,3 +71,10 @@ tasks {
     untilBuild.set(properties("pluginUntilBuild"))
   }
 }
+
+tasks.register<com.muy.so.task.copy.CopyAgentWrapToJvmSandboxTask>(com.muy.so.task.copy.CopyAgentWrapToJvmSandboxTask.NAME)
+tasks.register<com.muy.so.task.copy.CopyJvmSandboxToSandboxTask>(com.muy.so.task.copy.CopyJvmSandboxToSandboxTask.NAME)
+tasks["buildPlugin"].dependsOn(com.muy.so.task.copy.CopyJvmSandboxToSandboxTask.NAME)
+tasks["runIde"].dependsOn(com.muy.so.task.copy.CopyJvmSandboxToSandboxTask.NAME)
+tasks[com.muy.so.task.copy.CopyJvmSandboxToSandboxTask.NAME].dependsOn("buildSearchableOptions")
+tasks[com.muy.so.task.copy.CopyAgentWrapToJvmSandboxTask.NAME].dependsOn(":so-agent-wrap:jar")

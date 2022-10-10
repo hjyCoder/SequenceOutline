@@ -49,6 +49,9 @@
         <projectService serviceInterface="com.muy.view.window.sequence.configuration.SequenceConfiguration"
                         serviceImplementation="com.muy.view.window.sequence.configuration.SequenceConfiguration"/>
 
+        <executor implementation="com.muy.executor.RunnerExecutorAgentApplication"/>
+        <programRunner implementation="com.muy.executor.RunnerAgentApplication" order="first"/>
+
         <notificationGroup id="SequenceOutlineNotifier" displayType="BALLOON" hideFromSettings="false"/>
     </extensions>
 
