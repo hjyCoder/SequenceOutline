@@ -68,6 +68,19 @@
                    icon="fileTypes/java.svg">
                 <action id="com.muy.action.JavaMethodIdentityAction"
                         class="com.muy.action.JavaMethodIdentityAction" text="Copy JavaMethodIdentity" description="JavaMethodIdentity" icon="actions/copy.svg"/>
+                <action id="com.muy.action.BeanInvokeParamAction"
+                        class="com.muy.action.BeanInvokeParamAction" text="Bean Invoke" description="Bean Invoke" icon="actions/copy.svg"/>
+                <action id="com.muy.action.ConstructorInvokeParamAction"
+                        class="com.muy.action.ConstructorInvokeParamAction" text="Constructor Invoke" description="Constructor Invoke" icon="actions/copy.svg"/>
+            </group>
+
+            <group id="so.String.Group.Main" text="String Manipulation"
+                   description="Group of String"
+                   popup="true"
+                   icon="fileTypes/json.svg">
+                <action id="com.muy.action.POJO2JsonAction"
+                        class="com.muy.action.POJO2JsonAction" text="PojoJson" description="PojoJson" icon="actions/copy.svg"/>
+
             </group>
 
         </group>

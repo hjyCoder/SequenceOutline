@@ -6,6 +6,7 @@ import com.muy.so.agent.wrap.core.model.reflectinvoke.MethodInvokeVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.checkerframework.checker.units.qual.A;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -42,6 +43,31 @@ public class ReflectInvokeUtils {
 
     public static Object[] paramArr(MethodInvokeVO methodInvokeVO) {
         return paramValue(methodInvokeVO).toArray(new Object[0]);
+    }
+
+    public static Method findMethod(Class<?> clazz, String methodName, Class[] classes) {
+        try {
+            Method method = clazz.getDeclaredMethod(methodName, classes);
+            return method;
+        } catch (Exception ex) {
+            if (Object.class.equals(clazz.getSuperclass())) {
+                return null;
+            }
+            Method parentFind = findMethod(clazz.getSuperclass(), methodName, classes);
+            if (null != parentFind) {
+                return parentFind;
+            }
+            for (Class<?> inf : clazz.getInterfaces()) {
+                if (Object.class.equals(inf)) {
+                    return null;
+                }
+                Method infFind = findMethod(clazz.getSuperclass(), methodName, classes);
+                if (null != infFind) {
+                    return infFind;
+                }
+            }
+            return null;
+        }
     }
 
 

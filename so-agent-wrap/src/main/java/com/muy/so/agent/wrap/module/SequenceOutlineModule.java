@@ -9,6 +9,7 @@ import com.alibaba.jvm.sandbox.api.resource.LoadedClassDataSource;
 import com.alibaba.jvm.sandbox.api.resource.ModuleController;
 import com.alibaba.jvm.sandbox.api.resource.ModuleEventWatcher;
 import com.muy.so.agent.wrap.Constants;
+import com.muy.so.agent.wrap.core.model.reflectinvoke.BeanInvokeType;
 import com.muy.so.agent.wrap.core.model.reflectinvoke.BeanInvokeVO;
 import com.muy.so.agent.wrap.core.model.reflectinvoke.MethodInvokeVO;
 import com.muy.so.agent.wrap.core.spring.SpringContextAdapter;
@@ -114,9 +115,13 @@ public class SequenceOutlineModule extends ParamSupported implements Module, Mod
             BeanInvokeVO beanInvokeVO = JacksonUtils.toJavaObject(data, BeanInvokeVO.class);
             Class<?> clazz = Class.forName(beanInvokeVO.getClassFullName());
             Object obj = null;
-            if(1 == beanInvokeVO.getInvokeType()){
+            if(BeanInvokeType.ONLY_METHOD.getCode() == beanInvokeVO.getInvokeType()){
+                // 如果bean名称找不到则按类名称查询
                 obj = SpringContextAdapter.getBeanByName(beanInvokeVO.getBeanName());
-            }else{
+                if(null == obj){
+                    obj = SpringContextAdapter.getBeanByType(beanInvokeVO.getClassFullName());
+                }
+            }else if(BeanInvokeType.CONSTRUCT_INVOKE_METHOD.getCode() == beanInvokeVO.getInvokeType()){
                 MethodInvokeVO constructorMethod = beanInvokeVO.getConstructorMethod();
                 if(CollectionUtils.isEmpty(constructorMethod.getMpjtcs())){
                     Constructor constructor = clazz.getConstructor();
@@ -128,10 +133,14 @@ public class SequenceOutlineModule extends ParamSupported implements Module, Mod
             }
 
             MethodInvokeVO methodDesc = beanInvokeVO.getMethod();
-            Method method = clazz.getMethod(methodDesc.getMethodName(), ReflectInvokeUtils.classesArr(methodDesc));
+            Method method = ReflectInvokeUtils.findMethod(clazz, methodDesc.getMethodName(), ReflectInvokeUtils.classesArr(methodDesc));
+            if(null == method){
+                writer.write("can't not find method");
+                return;
+            }
+            method.setAccessible(true);
             Object result = method.invoke(obj, ReflectInvokeUtils.paramArr(methodDesc));
             String resultJson = ReflectInvokeUtils.ofJson(result);
-            System.out.println(JacksonUtils.toJSONString(result));
             writer.write(resultJson);
         } catch (Throwable e) {
             writer.write(e.getMessage());

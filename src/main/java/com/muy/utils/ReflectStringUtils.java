@@ -38,4 +38,12 @@ public class ReflectStringUtils {
         simpleClassName = classSimpleName(simpleClassName);
         return simpleClassName.substring(0, 1).toLowerCase() + simpleClassName.substring(1, simpleClassName.length());
     }
+
+    public static String methodNameDesc(String methodBodyString) {
+        int index = methodBodyString.indexOf('{');
+        if (index <= 0) {
+            return methodBodyString;
+        }
+        return methodBodyString.substring(0, index);
+    }
 }

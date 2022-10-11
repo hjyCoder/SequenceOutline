@@ -9,6 +9,7 @@ import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.concurrency.NonUrgentExecutor;
 import com.intellij.util.ui.components.BorderLayoutPanel;
+import com.muy.common.tab.TabJsonPanelCompareWrap;
 import com.muy.common.tab.TabJsonWrap;
 import com.muy.common.utils.JsonUtils;
 import com.muy.view.window.rest.bean.HttpMethod;
@@ -98,7 +99,7 @@ public class RestfulReqForm extends BorderLayoutPanel {
     /**
      * 标签 - 显示返回结果
      */
-    private TabJsonWrap responseView;
+    private TabJsonPanelCompareWrap responseView;
 
     /**
      * 选中的Request
@@ -180,7 +181,7 @@ public class RestfulReqForm extends BorderLayoutPanel {
         requestHead = new TabJsonWrap(project, 0, "head", tabbedPane, "{}", false);
         requestParams = new TabJsonWrap(project, 1, "Params", tabbedPane, "{}", false);
         requestBody = new TabJsonWrap(project, 2, "body", tabbedPane, "{}", false);
-        responseView = new TabJsonWrap(project, 3, "response", tabbedPane, "{}", false);
+        responseView = new TabJsonPanelCompareWrap(project, 3, "response", tabbedPane, "{}", false);
     }
 
     /**

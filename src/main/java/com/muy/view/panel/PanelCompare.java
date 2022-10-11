@@ -52,4 +52,8 @@ public class PanelCompare extends JSplitPane {
         return rightEditor.getSourceEditor();
 //        return null;
     }
+
+    public void fillSource(String source) {
+        leftEditor.setSource(source);
+    }
 }
