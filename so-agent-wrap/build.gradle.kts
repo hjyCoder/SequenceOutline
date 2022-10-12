@@ -17,6 +17,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.5")
     implementation("commons-io:commons-io:2.4")
     implementation("org.apache.commons:commons-collections4:4.4")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("org.slf4j:slf4j-api:1.7.24")
     implementation("ch.qos.logback:logback-classic:1.2.1")
     implementation("com.google.guava:guava:31.1-jre")

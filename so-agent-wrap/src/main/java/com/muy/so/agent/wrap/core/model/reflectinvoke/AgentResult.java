@@ -12,6 +12,8 @@ public class AgentResult<T> {
 
     private String message;
 
+    private Object[] reqParam;
+
     public static <T> AgentResult of(T data){
         AgentResult agentResult = new AgentResult();
         agentResult.setData(data);
@@ -48,5 +50,13 @@ public class AgentResult<T> {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Object[] getReqParam() {
+        return reqParam;
+    }
+
+    public void setReqParam(Object[] reqParam) {
+        this.reqParam = reqParam;
     }
 }

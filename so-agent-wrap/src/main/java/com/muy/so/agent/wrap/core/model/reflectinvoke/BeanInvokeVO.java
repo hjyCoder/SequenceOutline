@@ -32,6 +32,12 @@ public class BeanInvokeVO {
      */
     private MethodInvokeVO method;
 
+    /**
+     * 表示如何获取Bean
+     * 间接获取的方式
+     */
+    private BeanFindVO beanFind;
+
     public String getClassFullName() {
         return classFullName;
     }
@@ -70,5 +76,13 @@ public class BeanInvokeVO {
 
     public void setMethod(MethodInvokeVO method) {
         this.method = method;
+    }
+
+    public BeanFindVO getBeanFind() {
+        return beanFind;
+    }
+
+    public void setBeanFind(BeanFindVO beanFind) {
+        this.beanFind = beanFind;
     }
 }

@@ -76,6 +76,12 @@ public class ReflectInvokeUtils {
         return JacksonUtils.toJSONString(agentResult);
     }
 
+    public static <T> String ofJson(T data, Object[] reqParam) {
+        AgentResult agentResult = AgentResult.of(data);
+        agentResult.setReqParam(reqParam);
+        return JacksonUtils.toJSONString(agentResult);
+    }
+
     public static <T> String ofFailJson(String message) {
         AgentResult agentResult = AgentResult.ofFail(message);
         return JacksonUtils.toJSONString(agentResult);

@@ -51,6 +51,8 @@
 
         <executor implementation="com.muy.executor.RunnerExecutorAgentApplication"/>
         <programRunner implementation="com.muy.executor.RunnerAgentApplication" order="first"/>
+        <executor implementation="com.muy.executor.DebuggerExecutorAgentApplication"/>
+        <programRunner implementation="com.muy.executor.DebuggerAgentApplication" order="first"/>
 
         <notificationGroup id="SequenceOutlineNotifier" displayType="BALLOON" hideFromSettings="false"/>
     </extensions>
@@ -61,6 +63,7 @@
                popup="true"
                icon="/icons/SequenceOutline.png">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="MainMenu" anchor="last"/>
 
             <group id="Reflect.Group.Main" text="Reflect Manipulation"
                    description="Group of reflect"
@@ -72,10 +75,12 @@
                         class="com.muy.action.BeanInvokeParamAction" text="Bean Invoke" description="Bean Invoke" icon="actions/copy.svg"/>
                 <action id="com.muy.action.ConstructorInvokeParamAction"
                         class="com.muy.action.ConstructorInvokeParamAction" text="Constructor Invoke" description="Constructor Invoke" icon="actions/copy.svg"/>
+                <action id="com.muy.action.BeanFindParamAction"
+                        class="com.muy.action.BeanFindParamAction" text="Bean find Param" description="Bean find Param" icon="actions/copy.svg"/>
             </group>
 
-            <group id="so.String.Group.Main" text="String Manipulation"
-                   description="Group of String"
+            <group id="so.Json.Group.Main" text="Json Manipulation"
+                   description="Group of Json"
                    popup="true"
                    icon="fileTypes/json.svg">
                 <action id="com.muy.action.POJO2JsonAction"

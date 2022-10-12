@@ -33,6 +33,10 @@ public class MethodInvokeVO {
      */
     private List<List<Object>> mpjtcsValueJson;
 
+    public boolean constructor(){
+        return CONSTRUCT_METHOD_NAME.equals(methodName);
+    }
+
     public static String getConstructMethodName() {
         return CONSTRUCT_METHOD_NAME;
     }

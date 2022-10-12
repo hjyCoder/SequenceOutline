@@ -1,6 +1,5 @@
 package com.muy.utils;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -8,10 +7,8 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.ui.popup.Balloon;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.IconLoader;
-import com.intellij.ui.IconManager;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ui.UIUtil;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,8 +26,8 @@ public class GuiUtils {
 
     public static final Icon DATE = loadIcon("date.png");
 
-    public static final Icon RUN = loadIcon("history/run.svg");
-    public static final Icon DEBUG = loadIcon("history/debug.svg");
+    public static final Icon RUN = loadIcon("run.svg");
+    public static final Icon DEBUG = loadIcon("debug.svg");
 
 
     public static Icon loadIcon(String iconFilename) {

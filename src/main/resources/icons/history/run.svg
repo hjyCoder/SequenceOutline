@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg width="16pt" height="16pt" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
-  <g id="surface1" style="" transform="matrix(0.937622, 0, 0, 1, 0.395062, 0)">
-    <path style="stroke: none; fill-rule: nonzero; fill-opacity: 1; fill: rgb(237, 162, 0);" d="M 9 0.588 C 5.481 0.7 2.566 3.201 2.078 6.588 L 0 6.588 L 3 9.588 L 6 6.588 L 4.102 6.588 C 4.566 4.307 6.588 2.675 9 2.588 C 12.118 2.475 15.07 3.627 14.293 6.628 C 13.516 9.629 15.905 11.274 16.293 6.695 C 16.681 2.116 12.145 0.488 9 0.588 Z"/>
-  </g>
-  <polygon fill="#59A869" fill-rule="evenodd" points="6.649 5.611 13.649 10.611 6.649 15.611"/>
-</svg>

@@ -167,11 +167,11 @@ public class RestfulReqForm extends BorderLayoutPanel {
         sendRequest = new JXButton("sendD");
         buttonGroup.add(sendRequest, BorderLayout.EAST);
 
-        sendR = new JXButton("sendR");
-        buttonGroup.add(sendR, BorderLayout.CENTER);
-
-        reqParamSave = new JXButton("reqParamSave");
-        buttonGroup.add(reqParamSave, BorderLayout.WEST);
+//        sendR = new JXButton("sendR");
+//        buttonGroup.add(sendR, BorderLayout.CENTER);
+//
+//        reqParamSave = new JXButton("reqParamSave");
+//        buttonGroup.add(reqParamSave, BorderLayout.WEST);
         panelInput.add(buttonGroup, BorderLayout.EAST);
     }
 

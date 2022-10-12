@@ -48,19 +48,29 @@ public class PsiTypeToKvForJsonUtils {
     }
 
     public static List<Object> methodParamJson(PsiType psiType) {
+        return Lists.newArrayList(psiTypeJsonObj(psiType));
+    }
+
+    public static Object psiTypeJsonObj(PsiType psiType) {
         Object dvObj = genDefault(psiType);
         if (null != dvObj) {
-            return Lists.newArrayList(dvObj);
+            return dvObj;
         }
 
         if (psiType instanceof PsiClassType) {
             PsiClassType psiClassType = (PsiClassType) psiType;
-            return Lists.newArrayList(getFields(psiClassType.resolve()));
+            return getFields(psiClassType.resolve());
         }
-        return Lists.newArrayList();
+
+        if (psiType instanceof PsiArrayType) {
+            PsiArrayType psiArrayType = (PsiArrayType) psiType;
+            return Lists.newArrayList(psiTypeJsonObj(psiArrayType.getDeepComponentType()));
+        }
+
+        return new Object();
     }
 
-    private static Map<String, Object> getFields(PsiClass psiClass) {
+    public static Map<String, Object> getFields(PsiClass psiClass) {
         Map<String, Object> map = new LinkedHashMap<>();
 
         if (psiClass == null) {

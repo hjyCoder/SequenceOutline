@@ -1,12 +1,11 @@
 package com.muy.executor;
 
+import com.intellij.debugger.impl.GenericDebuggerRunner;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.*;
-import com.intellij.execution.impl.DefaultJavaProgramRunner;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.target.TargetEnvironmentAwareRunProfileState;
 import com.intellij.execution.ui.RunContentDescriptor;
-import com.muy.common.notification.SequenceOutlineNotifier;
 import com.muy.constant.SequenceConstant;
 import com.muy.utils.PluginPathUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -21,7 +20,7 @@ import java.util.List;
  * @Author jiyanghuang
  * @Date 2022/9/4 20:36
  */
-public class RunnerAgentApplication extends DefaultJavaProgramRunner {
+public class DebuggerAgentApplication extends GenericDebuggerRunner {
     @NotNull
     @Override
     public String getRunnerId() {
@@ -30,7 +29,7 @@ public class RunnerAgentApplication extends DefaultJavaProgramRunner {
 
     @Override
     public boolean canRun(@NotNull String executorId, @NotNull RunProfile profile) {
-        return executorId.equals(SequenceConstant.RUNNER_ID) && profile instanceof RunConfigurationBase;
+        return executorId.equals(SequenceConstant.DEBUGGER_ID) && profile instanceof RunConfigurationBase;
     }
 
     @Override
@@ -77,8 +76,6 @@ public class RunnerAgentApplication extends DefaultJavaProgramRunner {
      */
     public List<String> agentParams(){
         List<String> params = Lists.newArrayList();
-//        params.add("-Xdebug");
-//        params.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000");
         Pair<String, String> homeAgentJar = PluginPathUtils.jvmsandboxPath();
         String javaagentParam = "-javaagent:"+homeAgentJar.getRight()+"=server.port=8822;server.ip=127.0.0.1;home=" + homeAgentJar.getLeft();
         params.add(javaagentParam);

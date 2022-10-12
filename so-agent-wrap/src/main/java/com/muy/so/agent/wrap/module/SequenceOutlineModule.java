@@ -9,6 +9,7 @@ import com.alibaba.jvm.sandbox.api.resource.LoadedClassDataSource;
 import com.alibaba.jvm.sandbox.api.resource.ModuleController;
 import com.alibaba.jvm.sandbox.api.resource.ModuleEventWatcher;
 import com.muy.so.agent.wrap.Constants;
+import com.muy.so.agent.wrap.core.model.reflectinvoke.BeanFindVO;
 import com.muy.so.agent.wrap.core.model.reflectinvoke.BeanInvokeType;
 import com.muy.so.agent.wrap.core.model.reflectinvoke.BeanInvokeVO;
 import com.muy.so.agent.wrap.core.model.reflectinvoke.MethodInvokeVO;
@@ -21,6 +22,7 @@ import com.muy.so.agent.wrap.core.util.ReflectInvokeUtils;
 import com.muy.so.agent.wrap.module.advice.SpringInstantiateAdvice;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +96,7 @@ public class SequenceOutlineModule extends ParamSupported implements Module, Mod
      */
     @Override
     public void loadCompleted() {
-        System.out.println("loadCompleted--->" + configInfo.getHome() + "-->" + JacksonUtils.toJSONString(configInfo));
+        log.info("loadCompleted");
     }
 
 
@@ -116,11 +118,27 @@ public class SequenceOutlineModule extends ParamSupported implements Module, Mod
             Class<?> clazz = Class.forName(beanInvokeVO.getClassFullName());
             Object obj = null;
             if(BeanInvokeType.ONLY_METHOD.getCode() == beanInvokeVO.getInvokeType()){
-                // 如果bean名称找不到则按类名称查询
-                obj = SpringContextAdapter.getBeanByName(beanInvokeVO.getBeanName());
-                if(null == obj){
-                    obj = SpringContextAdapter.getBeanByType(beanInvokeVO.getClassFullName());
+                if(null != beanInvokeVO.getBeanFind()){
+                    BeanFindVO beanFindVO = beanInvokeVO.getBeanFind();
+                    Object indirectObj = null;
+                    // 如果bean名称找不到则按类名称查询
+                    indirectObj = SpringContextAdapter.getBeanByName(beanFindVO.getBeanName());
+                    if(null == indirectObj){
+                        indirectObj = SpringContextAdapter.getBeanByType(beanFindVO.getClassFullName());
+                    }
+                    if(null == indirectObj){
+                        writer.write("can't not find bean indirectObj");
+                        return;
+                    }
+                    obj = FieldUtils.readField(indirectObj, beanFindVO.getFieldName(), true);
+                }else{
+                    // 如果bean名称找不到则按类名称查询
+                    obj = SpringContextAdapter.getBeanByName(beanInvokeVO.getBeanName());
+                    if(null == obj){
+                        obj = SpringContextAdapter.getBeanByType(beanInvokeVO.getClassFullName());
+                    }
                 }
+
             }else if(BeanInvokeType.CONSTRUCT_INVOKE_METHOD.getCode() == beanInvokeVO.getInvokeType()){
                 MethodInvokeVO constructorMethod = beanInvokeVO.getConstructorMethod();
                 if(CollectionUtils.isEmpty(constructorMethod.getMpjtcs())){
@@ -133,14 +151,19 @@ public class SequenceOutlineModule extends ParamSupported implements Module, Mod
             }
 
             MethodInvokeVO methodDesc = beanInvokeVO.getMethod();
+            if(methodDesc.constructor()){
+                writer.write("new Object success !");
+                return;
+            }
             Method method = ReflectInvokeUtils.findMethod(clazz, methodDesc.getMethodName(), ReflectInvokeUtils.classesArr(methodDesc));
             if(null == method){
                 writer.write("can't not find method");
                 return;
             }
             method.setAccessible(true);
-            Object result = method.invoke(obj, ReflectInvokeUtils.paramArr(methodDesc));
-            String resultJson = ReflectInvokeUtils.ofJson(result);
+            Object[] reqParam = ReflectInvokeUtils.paramArr(methodDesc);
+            Object result = method.invoke(obj, reqParam);
+            String resultJson = ReflectInvokeUtils.ofJson(result, reqParam);
             writer.write(resultJson);
         } catch (Throwable e) {
             writer.write(e.getMessage());
