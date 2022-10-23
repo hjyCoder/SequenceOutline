@@ -53,6 +53,7 @@ public class MybatisHotswapAction extends ReloadFileAction {
                 DebuggerSession session = DebuggerManagerEx.getInstanceEx(project).getContext().getDebuggerSession();
                 if (session != null) {
                     HotSwapUI.getInstance(project).compileAndReload(session, files);
+                    // 需要等待编译完加载完后才能调用 agent 重新加载否则不生效
                     reloadMybatisReq(project, fulClassName);
                 }
             }

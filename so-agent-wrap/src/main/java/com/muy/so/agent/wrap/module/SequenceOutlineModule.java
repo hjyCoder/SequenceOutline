@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Resource;
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -182,9 +183,15 @@ public class SequenceOutlineModule extends ParamSupported implements Module, Mod
             method.setAccessible(true);
             Object[] reqParam = ReflectInvokeUtils.paramArr(methodDesc);
             Object result = method.invoke(obj, reqParam);
+            System.out.println("re-->" + result);
             String resultJson = ReflectInvokeUtils.ofJson(result, reqParam);
             writer.write(resultJson);
-        } catch (Throwable e) {
+        } catch (NullPointerException npe){
+            // todo 关于异常如何编写，吐出
+            writer.write("NullPointerException");
+        }catch (InvocationTargetException invocationTargetException){
+            writer.write(invocationTargetException.getTargetException().getMessage());
+        }catch (Throwable e) {
             writer.write(e.getMessage());
         }
     }
