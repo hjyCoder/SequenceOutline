@@ -15,14 +15,12 @@ import com.muy.so.agent.wrap.core.model.reflectinvoke.BeanInvokeVO;
 import com.muy.so.agent.wrap.core.model.reflectinvoke.MethodInvokeVO;
 import com.muy.so.agent.wrap.core.spring.SpringContextAdapter;
 import com.muy.so.agent.wrap.core.spring.SpringContextInnerContainer;
-import com.muy.so.agent.wrap.core.util.JacksonUtils;
-import com.muy.so.agent.wrap.core.util.LogbackUtils;
-import com.muy.so.agent.wrap.core.util.PathUtils;
-import com.muy.so.agent.wrap.core.util.ReflectInvokeUtils;
+import com.muy.so.agent.wrap.core.util.*;
 import com.muy.so.agent.wrap.module.advice.SpringInstantiateAdvice;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,6 +135,12 @@ public class SequenceOutlineModule extends ParamSupported implements Module, Mod
                     if(null == obj){
                         obj = SpringContextAdapter.getBeanByType(beanInvokeVO.getClassFullName());
                     }
+                    if(null != obj){
+                        // 如果对象是 FactoryBean 则需要 getObject 才能生效
+                        if(ReflectInvokeUtils.inheritClassName("org.springframework.beans.factory.FactoryBean", obj.getClass())){
+                            obj = MethodUtils.invokeMethod(obj, "getObject");
+                        }
+                    }
                 }
 
             }else if(BeanInvokeType.CONSTRUCT_INVOKE_METHOD.getCode() == beanInvokeVO.getInvokeType()){
@@ -148,6 +152,21 @@ public class SequenceOutlineModule extends ParamSupported implements Module, Mod
                     Constructor constructor = clazz.getConstructor(ReflectInvokeUtils.classesArr(constructorMethod));
                     obj = constructor.newInstance(ReflectInvokeUtils.paramArr(constructorMethod));
                 }
+            }else if(BeanInvokeType.RELOAD_MYBATIS.getCode() == beanInvokeVO.getInvokeType()){
+                obj = SpringContextAdapter.getBeanByName(beanInvokeVO.getBeanName());
+                if(null == obj){
+                    obj = SpringContextAdapter.getBeanByType(beanInvokeVO.getClassFullName());
+                }
+                if(null == obj){
+                    writer.write("can't find the mapper ");
+                    return;
+                }
+                System.out.println("---> find the mapper");
+                // obj 是 org.mybatis.spring.mapper.MapperFactoryBean
+                obj = MethodUtils.invokeMethod(obj, "getObject");
+                MybatisReloadMapperUtils.reloadMybatisMapper(clazz, obj);
+                writer.write("reload mybatis success !");
+                return;
             }
 
             MethodInvokeVO methodDesc = beanInvokeVO.getMethod();

@@ -50,24 +50,46 @@ public class ReflectInvokeUtils {
             Method method = clazz.getDeclaredMethod(methodName, classes);
             return method;
         } catch (Exception ex) {
-            if (Object.class.equals(clazz.getSuperclass())) {
-                return null;
-            }
-            Method parentFind = findMethod(clazz.getSuperclass(), methodName, classes);
-            if (null != parentFind) {
-                return parentFind;
-            }
-            for (Class<?> inf : clazz.getInterfaces()) {
-                if (Object.class.equals(inf)) {
-                    return null;
+            if (null != clazz.getSuperclass() && !Object.class.equals(clazz.getSuperclass())) {
+                Method parentFind = findMethod(clazz.getSuperclass(), methodName, classes);
+                if (null != parentFind) {
+                    return parentFind;
                 }
-                Method infFind = findMethod(clazz.getSuperclass(), methodName, classes);
-                if (null != infFind) {
-                    return infFind;
+            }
+
+            for (Class<?> inf : clazz.getInterfaces()) {
+                if (!Object.class.equals(inf)) {
+                    Method infFind = findMethod(inf, methodName, classes);
+                    if (null != infFind) {
+                        return infFind;
+                    }
                 }
             }
             return null;
         }
+    }
+
+    /**
+     *
+     * @param fulClassName
+     * @param clazz 该类对象是否实现了 fulClassName
+     * @return
+     */
+    public static boolean inheritClassName(String fulClassName, Class<?> clazz) {
+        if (fulClassName.equals(clazz.getName())) {
+            return true;
+        }
+        if (null == clazz.getSuperclass()) {
+            return false;
+        }else if(inheritClassName(fulClassName, clazz.getSuperclass())){
+            return true;
+        }
+        for (Class<?> inf : clazz.getInterfaces()) {
+            if (inheritClassName(fulClassName, inf)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

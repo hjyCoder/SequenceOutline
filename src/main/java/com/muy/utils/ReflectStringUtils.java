@@ -1,5 +1,7 @@
 package com.muy.utils;
 
+import com.muy.common.exception.SequenceOutlineException;
+
 /**
  * @Author jiyanghuang
  * @Date 2022/5/26 01:44
@@ -45,5 +47,19 @@ public class ReflectStringUtils {
             return methodBodyString;
         }
         return methodBodyString.substring(0, index);
+    }
+
+    /**
+     * 根据类文件找出类名
+     * @param filePath
+     * @return
+     */
+    public static String fulClassName(String filePath){
+        String srcFile = "/src/main/java/";
+        int index = filePath.indexOf(srcFile);
+        if(index <= 0){
+            throw new SequenceOutlineException("invalid filePath");
+        }
+        return filePath.substring(index + srcFile.length(), filePath.length() - ".java".length()).replaceAll("/", ".");
     }
 }

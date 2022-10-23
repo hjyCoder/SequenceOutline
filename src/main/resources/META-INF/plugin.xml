@@ -5,7 +5,7 @@
 
     <description><![CDATA[
     <div>
-        Sequence PlantUML and Json Tools plugin
+        Sequence PlantUML and Json Tools plugin And Agent reflectInvoke And hotswap
     </div>
     <div style="white-space:normal; word-break:break-all; width:100%">
         <ul>
@@ -16,6 +16,8 @@
             <li>Filter JSON according to jsonpath, jsonpath expressions</li>
             <li>Support JSON compare</li>
             <li>Support date format</li>
+            <li>Agent reflectInvoke</li>
+            <li>mybatis hotswap</li>
         </ul>
     </div>
     <br>
@@ -85,7 +87,25 @@
                    icon="fileTypes/json.svg">
                 <action id="com.muy.action.POJO2JsonAction"
                         class="com.muy.action.POJO2JsonAction" text="PojoJson" description="PojoJson" icon="actions/copy.svg"/>
+                <action id="com.muy.action.UnescapeJsonClipboardAction"
+                        class="com.muy.action.UnescapeJsonClipboardAction" />
+                <action id="com.muy.action.UnescapeJsonClipboardGetZeroAction"
+                        class="com.muy.action.UnescapeJsonClipboardGetZeroAction" />
+                <action id="com.muy.action.UnescapeJsonClipboardGetOneAction"
+                        class="com.muy.action.UnescapeJsonClipboardGetOneAction" />
+                <action id="com.muy.action.UnescapeJsonClipboardGetTwoAction"
+                        class="com.muy.action.UnescapeJsonClipboardGetTwoAction" />
+                <action id="com.muy.action.UnescapeJsonClipboardGetThreeAction"
+                        class="com.muy.action.UnescapeJsonClipboardGetThreeAction" />
 
+            </group>
+
+            <group id="so.mybatis.Group.Main" text="Mybatis Manipulation"
+                   description="Group of Mybatis"
+                   popup="true"
+                   icon="fileTypes/json.svg">
+                <action id="com.muy.action.MybatisHotswapAction"
+                        class="com.muy.action.MybatisHotswapAction" text="Mybatis Hotswap" description="Mybatis Hotswap" icon="actions/copy.svg"/>
             </group>
 
         </group>

@@ -10,7 +10,8 @@ public enum BeanInvokeType {
 
     ONLY_METHOD(1, "现在bean仅调用方法"),
     CONSTRUCT_INVOKE_METHOD(2, "先构建方法再调用"),
-    STATIC_METHOD(3, "静态方法");;
+    STATIC_METHOD(3, "静态方法"),
+    RELOAD_MYBATIS(4, "重新加载Mybatis指定Mapper");
 
     @Getter
     private int code;

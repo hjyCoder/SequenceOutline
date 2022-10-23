@@ -19,6 +19,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.muy.common.restful.RestfulReqForm.AGENT_INVOKE_PATH;
+import static com.muy.common.restful.RestfulReqForm.REQ_PARAM_KEY;
+
 public class HttpRequestData {
 
     /**
@@ -292,6 +295,20 @@ public class HttpRequestData {
         this.method = HttpMethod.POST;
         this.path = "/sandbox/default/module/http/sequenceOutline/reflectInvoke";
         restfulReqForm.fillData(this);
+    }
+
+    /**
+     * 用于调用beanInvoke
+     * @param requestParam
+     */
+    public void fillDataDefaultReq(String requestParam){
+        this.host = "http://localhost";
+        this.port = "8822";
+        this.method = HttpMethod.POST;
+        this.path = "/sandbox/default/module/http/sequenceOutline/reflectInvoke";
+        Map<String,String> reqParamMap = Maps.newHashMap();
+        reqParamMap.put(REQ_PARAM_KEY, requestParam);
+        this.setQueryParams(reqParamMap);
     }
 
     public static Map<String, String> jsonToMap(String json) {
