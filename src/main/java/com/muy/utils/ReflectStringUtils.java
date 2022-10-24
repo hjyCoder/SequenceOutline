@@ -1,5 +1,7 @@
 package com.muy.utils;
 
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiParameter;
 import com.muy.common.exception.SequenceOutlineException;
 
 /**
@@ -47,6 +49,24 @@ public class ReflectStringUtils {
             return methodBodyString;
         }
         return methodBodyString.substring(0, index);
+    }
+
+    public static String methodNameDesc(PsiMethod psiMethod) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(psiMethod.getName());
+        sb.append("(");
+        PsiParameter[] parameters = psiMethod.getParameterList().getParameters();
+        for (PsiParameter parameter : parameters) {
+            sb.append(parameter.getType().getPresentableText());
+            sb.append(" ");
+            sb.append(parameter.getName());
+            sb.append(", ");
+        }
+        if(parameters.length > 0){
+            sb.delete(sb.length() - 2, sb.length() - 1);
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
     /**

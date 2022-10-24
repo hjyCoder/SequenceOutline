@@ -42,6 +42,10 @@
     <project-components>
     </project-components>
 
+    <projectListeners>
+        <listener class="com.muy.action.MybatisHotswapAction$HotSwapDebuggerManagerListener" topic="com.intellij.debugger.impl.DebuggerManagerListener"/>
+    </projectListeners>
+
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="SequenceOutline" anchor="bottom"
                     factoryClass="com.muy.view.window.SequenceOutlineWindowFactory" order="last"

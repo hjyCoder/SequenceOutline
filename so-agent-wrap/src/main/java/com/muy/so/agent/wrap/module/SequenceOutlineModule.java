@@ -162,7 +162,6 @@ public class SequenceOutlineModule extends ParamSupported implements Module, Mod
                     writer.write("can't find the mapper ");
                     return;
                 }
-                System.out.println("---> find the mapper");
                 // obj 是 org.mybatis.spring.mapper.MapperFactoryBean
                 obj = MethodUtils.invokeMethod(obj, "getObject");
                 MybatisReloadMapperUtils.reloadMybatisMapper(clazz, obj);
@@ -183,16 +182,14 @@ public class SequenceOutlineModule extends ParamSupported implements Module, Mod
             method.setAccessible(true);
             Object[] reqParam = ReflectInvokeUtils.paramArr(methodDesc);
             Object result = method.invoke(obj, reqParam);
-            System.out.println("re-->" + result);
             String resultJson = ReflectInvokeUtils.ofJson(result, reqParam);
             writer.write(resultJson);
         } catch (NullPointerException npe){
-            // todo 关于异常如何编写，吐出
-            writer.write("NullPointerException");
+            writer.write(ReflectInvokeUtils.ofFailJson("NullPointerException"));
         }catch (InvocationTargetException invocationTargetException){
-            writer.write(invocationTargetException.getTargetException().getMessage());
+            writer.write(ReflectInvokeUtils.ofFailJson(invocationTargetException.getTargetException().getMessage()));
         }catch (Throwable e) {
-            writer.write(e.getMessage());
+            writer.write(ReflectInvokeUtils.ofFailJson(e.getMessage()));
         }
     }
 

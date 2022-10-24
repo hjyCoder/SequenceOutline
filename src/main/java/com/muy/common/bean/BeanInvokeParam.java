@@ -10,6 +10,7 @@ import com.muy.utils.JavaTypeCanonicalUtils;
 import com.muy.utils.PsiTypeToKvForJsonUtils;
 import com.muy.utils.ReflectStringUtils;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
@@ -79,10 +80,13 @@ public class BeanInvokeParam {
      * @param psiMethod
      * @return
      */
-    public static BeanInvokeParam ofInvokeMethod(PsiMethod psiMethod, BeanInvokeType beanInvokeType) {
+    public static BeanInvokeParam ofInvokeMethod(PsiMethod psiMethod, String fulClassName, BeanInvokeType beanInvokeType) {
         BeanInvokeParam beanInvokeParam = new BeanInvokeParam();
 
         String fClassName = psiMethod.getContainingClass().getQualifiedName();
+        if(StringUtils.isNotBlank(fulClassName)){
+            fClassName = fulClassName;
+        }
         beanInvokeParam.setClassFullName(fClassName);
         beanInvokeParam.setInvokeType(beanInvokeType.getCode());
         // 静态方法不需要生成对象
@@ -98,7 +102,7 @@ public class BeanInvokeParam {
             }else{
                 Map<String, PsiMethod> psiMethodMap = Maps.newHashMap();
                 for(PsiMethod psiMethodConstructor : psiMethodConstructors){
-                    psiMethodMap.put(ReflectStringUtils.methodNameDesc(psiMethodConstructor.getText()), psiMethodConstructor);
+                    psiMethodMap.put(ReflectStringUtils.methodNameDesc(psiMethodConstructor), psiMethodConstructor);
                 }
                 DialogFormConstructorSelect dialogFormConstructorSelect = new DialogFormConstructorSelect(Lists.newArrayList(psiMethodMap.keySet()), (methodSign) -> {
                     PsiMethod psiMethodSelect = psiMethodMap.get(methodSign);

@@ -2,6 +2,7 @@ package com.muy.action;
 
 import com.intellij.debugger.DebuggerManagerEx;
 import com.intellij.debugger.actions.ReloadFileAction;
+import com.intellij.debugger.impl.DebuggerManagerListener;
 import com.intellij.debugger.impl.DebuggerSession;
 import com.intellij.debugger.ui.HotSwapUI;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -9,8 +10,12 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.task.ProjectTaskListener;
+import com.intellij.task.ProjectTaskManager;
 import com.intellij.util.concurrency.NonUrgentExecutor;
+import com.intellij.util.messages.MessageBusConnection;
 import com.muy.common.bean.BeanInvokeParam;
 import com.muy.common.bean.BeanInvokeType;
 import com.muy.common.notification.SequenceOutlineNotifier;
@@ -31,12 +36,13 @@ import java.io.IOException;
  */
 public class MybatisHotswapAction extends ReloadFileAction {
 
+    private static String fulClassName = "";
+
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
         if (project != null) {
             VirtualFile[] files = getCompilableFiles(project, e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY));
-            String fulClassName = "";
             if (files.length > 0) {
                 VirtualFile first = files[0];
                 if(first.getPath().endsWith(".xml")){
@@ -53,8 +59,8 @@ public class MybatisHotswapAction extends ReloadFileAction {
                 DebuggerSession session = DebuggerManagerEx.getInstanceEx(project).getContext().getDebuggerSession();
                 if (session != null) {
                     HotSwapUI.getInstance(project).compileAndReload(session, files);
-                    // 需要等待编译完加载完后才能调用 agent 重新加载否则不生效
-                    reloadMybatisReq(project, fulClassName);
+                }else{
+                    fulClassName = "";
                 }
             }
         }
@@ -65,7 +71,7 @@ public class MybatisHotswapAction extends ReloadFileAction {
      * @param project
      * @param fulClassName
      */
-    private void reloadMybatisReq(Project project, String fulClassName){
+    private static void reloadMybatisReq(Project project, String fulClassName){
         HttpRequestData httpRequestData = new HttpRequestData();
         RequestExecutorApache requestExecutor = new RequestExecutorApache();
         BeanInvokeParam beanInvokeParam = new BeanInvokeParam();
@@ -86,10 +92,70 @@ public class MybatisHotswapAction extends ReloadFileAction {
                 resp = response.getBody();
                 return resp;
             }).finishOnUiThread(ModalityState.NON_MODAL, (c) -> {
-
+                if(null != c){
+                    SequenceOutlineNotifier.notify(c);
+                }else{
+                    SequenceOutlineNotifier.notifyError("reload mybatis fail");
+                }
             }).inSmartMode(project).submit(NonUrgentExecutor.getInstance());
         } catch (Throwable throwable) {
             throwable.printStackTrace();
+        }
+    }
+
+    public static class HotSwapDebuggerManagerListener implements DebuggerManagerListener {
+        private @NotNull final Project myProject;
+        private MessageBusConnection myConn;
+
+        public HotSwapDebuggerManagerListener(@NotNull Project project) {
+            myProject = project;
+            myConn = null;
+        }
+
+        @Override
+        public void sessionAttached(DebuggerSession session) {
+            if (myConn == null) {
+                myConn = myProject.getMessageBus().connect();
+                myConn.subscribe(ProjectTaskListener.TOPIC, new MyCompilationStatusListener(myProject));
+            }
+        }
+
+        @Override
+        public void sessionDetached(DebuggerSession session) {
+            final MessageBusConnection conn = myConn;
+            if (conn != null) {
+                Disposer.dispose(conn);
+                myConn = null;
+            }
+        }
+    }
+
+    private static final class MyCompilationStatusListener implements ProjectTaskListener {
+        private final Project myProject;
+
+        private MyCompilationStatusListener(Project project) {
+            myProject = project;
+        }
+
+        @Override
+        public void finished(ProjectTaskManager.@NotNull Result result) {
+            if(StringUtils.isNotBlank(fulClassName)){
+                ReadAction.nonBlocking(() -> {
+                    try{
+                        Thread.sleep(3500);
+                        // 需要等待编译完加载完后才能调用 agent 重新加载否则不生效
+                        reloadMybatisReq(myProject, fulClassName);
+                        fulClassName = "";
+                    }catch (Exception ex){
+                        fulClassName = "";
+                    }
+                    return "";
+                }).finishOnUiThread(ModalityState.NON_MODAL, (c) -> {
+
+                }).inSmartMode(myProject).submit(NonUrgentExecutor.getInstance());
+            }else{
+                fulClassName = "";
+            }
         }
     }
 }

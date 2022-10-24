@@ -28,7 +28,7 @@ public class ConstructorInvokeParamAction extends AnAction {
         PsiMethod psiMethod = (PsiMethod)psiElement;
 
         try {
-            BeanInvokeParam beanInvokeParam = BeanInvokeParam.ofInvokeMethod(psiMethod, BeanInvokeType.CONSTRUCT_INVOKE_METHOD);
+            BeanInvokeParam beanInvokeParam = BeanInvokeParam.ofInvokeMethod(psiMethod, "", BeanInvokeType.CONSTRUCT_INVOKE_METHOD);
             ClipboardUtils.fillStringToClip(JacksonUtils.toJSONString(beanInvokeParam));
         } catch (SequenceOutlineException sequenceOutlineException) {
             if (null != sequenceOutlineException.getResponseCode()) {
