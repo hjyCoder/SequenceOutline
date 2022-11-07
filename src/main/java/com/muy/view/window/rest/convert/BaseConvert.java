@@ -185,11 +185,13 @@ public abstract class BaseConvert<V> {
             PsiClassReferenceType type = (PsiClassReferenceType) parameterType;
 
             GlobalSearchScope resolveScope = type.getResolveScope();
-            PsiFile[] psiFiles = FilenameIndex.getFilesByName(
-                    method.getProject(),
-                    type.getName() + ".java",
-                    resolveScope
-            );
+// 临时不需要该方法
+//            PsiFile[] psiFiles = FilenameIndex.getFilesByName(
+//                    method.getProject(),
+//                    type.getName() + ".java",
+//                    resolveScope
+//            );
+            PsiFile[] psiFiles = new PsiFile[0];
             if (psiFiles.length > 0) {
                 for (PsiFile psiFile : psiFiles) {
                     if (psiFile instanceof PsiJavaFile) {

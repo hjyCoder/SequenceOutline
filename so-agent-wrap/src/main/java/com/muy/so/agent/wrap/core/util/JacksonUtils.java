@@ -13,10 +13,16 @@ import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -812,5 +818,153 @@ public class JacksonUtils {
         } else {
             listT.stream().sorted();
         }
+    }
+
+    public static void jsonFillObj(String jsonStr, Object obj) {
+        JsonNode jsonNode = toJsonNodeIgnoreEX(jsonStr);
+        if (!JsonNodeType.OBJECT.equals(jsonNode.getNodeType())) {
+            return;
+        }
+        ObjectNode objectNode = (ObjectNode) jsonNode;
+        Map<String, Field> fieldMap = Maps.newHashMap();
+
+        for (Field f : FieldUtils.getAllFields(obj.getClass())) {
+            fieldMap.put(f.getName(), f);
+        }
+        objectNode.fields().forEachRemaining(entry -> {
+            Field f = fieldMap.get(entry.getKey());
+            if (null != f) {
+                Object v = mapper.convertValue(entry.getValue(), f.getType());
+                f.setAccessible(true);
+                try {
+                    f.set(obj, v);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public static Object genObjParamConstructor(Class clazz) {
+        Constructor<?>[] constructors = clazz.getConstructors();
+        if (null == constructors || 0 == constructors.length) {
+            return findGenMethod(clazz);
+        }
+        Map<Integer, List<Constructor<?>>> paramCountConsMap = Maps.newTreeMap();
+        for (Constructor<?> constructor : constructors) {
+            if (0 == constructor.getParameterCount()) {
+                continue;
+            }
+            List<Constructor<?>> cons = paramCountConsMap.get(constructor.getParameterCount());
+            if (null == cons) {
+                cons = new ArrayList<>();
+                paramCountConsMap.put(constructor.getParameterCount(), cons);
+            }
+            cons.add(constructor);
+        }
+        for (Map.Entry<Integer, List<Constructor<?>>> entry : paramCountConsMap.entrySet()) {
+            for (Constructor<?> constructor : entry.getValue()) {
+                Object obj = genObjDefault(constructor);
+                if (null != obj) {
+                    return obj;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Object genObjDefault(Constructor<?> constructor) {
+        try {
+            Object[] params = defaultParam(constructor.getParameterTypes());
+            if (null == params) {
+                return constructor.newInstance();
+            }
+            return constructor.newInstance(params);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Object[] defaultParam(Class<?>[] parameterTypes) {
+        if (null == parameterTypes || 0 == parameterTypes.length) {
+            return null;
+        }
+        int len = parameterTypes.length;
+        Object[] paramInvokes = new Object[len];
+        for (int i = 0; i < len; i++) {
+            paramInvokes[i] = genDefault(parameterTypes[i]);
+        }
+        return paramInvokes;
+    }
+
+    public static Object genDefault(Class<?> clazz) {
+        if (clazz.isEnum()) {
+            Object[] values = clazz.getEnumConstants();
+            if (null != values && values.length > 0) {
+                return values[0];
+            }
+            return null;
+        }
+        switch (clazz.getName()) {
+            case "boolean":
+            case "java.lang.Boolean":
+                return false;
+            case "byte":
+            case "java.lang.Byte":
+                return (byte) 0;
+            case "char":
+            case "java.lang.Character":
+                return '\0';
+            case "short":
+            case "java.lang.Short":
+                return (short) 0;
+            case "int":
+            case "java.lang.Integer":
+                return 0;
+            case "long":
+            case "java.lang.Long":
+                return 0L;
+            case "float":
+            case "java.lang.Float":
+                return 1F;
+            case "double":
+            case "java.lang.Double":
+                return 1D;
+            case "java.lang.String":
+                return "str";
+            case "java.math.BigDecimal":
+                return BigDecimal.ONE;
+            default:
+                return null;
+        }
+    }
+
+    public static Object findGenMethod(Class clazz) {
+        Method[] methods = clazz.getMethods();
+        for (Method method : methods) {
+            Class clazzRe = method.getReturnType();
+            if (null == clazzRe) {
+                continue;
+            }
+            if (clazz.equals(clazzRe) && Modifier.isStatic(method.getModifiers())) {
+                method.setAccessible(true);
+                try {
+                    Object[] paramArr = defaultParam(method.getParameterTypes());
+                    Object genValue = null;
+                    if (null == paramArr) {
+                        genValue = method.invoke(null);
+                    } else {
+                        genValue = method.invoke(null, paramArr);
+                    }
+                    if (null != genValue) {
+                        return genValue;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return null;
     }
 }

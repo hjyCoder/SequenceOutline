@@ -77,8 +77,8 @@ public class RunnerAgentApplication extends DefaultJavaProgramRunner {
      */
     public List<String> agentParams(){
         List<String> params = Lists.newArrayList();
-        params.add("-Xdebug");
-        params.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000");
+//        params.add("-Xdebug");
+//        params.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000");
         Pair<String, String> homeAgentJar = PluginPathUtils.jvmsandboxPath();
         String javaagentParam = "-javaagent:"+homeAgentJar.getRight()+"=server.port=8822;server.ip=127.0.0.1;home=" + homeAgentJar.getLeft();
         params.add(javaagentParam);

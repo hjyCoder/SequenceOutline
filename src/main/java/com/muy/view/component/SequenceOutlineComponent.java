@@ -1,6 +1,7 @@
 package com.muy.view.component;
 
 import com.google.common.collect.Maps;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ComponentManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -69,14 +70,14 @@ public class SequenceOutlineComponent implements ContentManagerListener {
         toolWindow.getContentManager().addContentManagerListener(this);
 
         Content content;
-
+        ContentFactory contentFactory = ApplicationManager.getApplication().getService(ContentFactory.class);
         SequenceTab sequenceTab = new SequenceTab(project);
-        content = ContentFactory.SERVICE.getInstance().createContent(sequenceTab.panelShow(), sequenceTab.tabName(), false);
+        content = contentFactory.createContent(sequenceTab.panelShow(), sequenceTab.tabName(), false);
         toolWindow.getContentManager().addContent(content);
         toolSetTabMap.put(sequenceTab.tabName(), sequenceTab);
 
         JsonTab jsonTab = new JsonTab(project);
-        content = ContentFactory.SERVICE.getInstance().createContent(jsonTab.panelShow(), jsonTab.tabName(), false);
+        content = contentFactory.createContent(jsonTab.panelShow(), jsonTab.tabName(), false);
         toolWindow.getContentManager().addContent(content);
         toolSetTabMap.put(jsonTab.tabName(), jsonTab);
 
@@ -93,7 +94,7 @@ public class SequenceOutlineComponent implements ContentManagerListener {
         try {
             AbstractSequenceOutlineSetTab toolSetTab = tabClass.getDeclaredConstructor().newInstance();
             toolSetTab.setProject(project);
-            Content content = ContentFactory.SERVICE.getInstance().createContent(toolSetTab.panelShow(), toolSetTab.tabName(), false);
+            Content content = ApplicationManager.getApplication().getService(ContentFactory.class).createContent(toolSetTab.panelShow(), toolSetTab.tabName(), false);
             content.setCloseable(false);
             return content;
         } catch (Exception ex) {

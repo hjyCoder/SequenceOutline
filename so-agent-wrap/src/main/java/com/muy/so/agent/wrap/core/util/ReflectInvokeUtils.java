@@ -1,5 +1,6 @@
 package com.muy.so.agent.wrap.core.util;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.google.common.collect.Lists;
 import com.muy.so.agent.wrap.core.model.reflectinvoke.AgentResult;
 import com.muy.so.agent.wrap.core.model.reflectinvoke.MethodInvokeVO;
@@ -35,7 +36,17 @@ public class ReflectInvokeUtils {
                 List<Object> jsonValues = methodInvokeVO.getMpjtcsValueJson().get(i);
                 String javaTypeCanonical = methodInvokeVO.getMpjtcs().get(i);
                 List<Object> values = JacksonUtils.toJavaObjectList(JacksonUtils.toJSONString(jsonValues), javaTypeCanonical);
-                result.add(values.get(0));
+                if (CollectionUtils.isNotEmpty(values)) {
+                    result.add(values.get(0));
+                } else {
+                    JavaType javaType = JacksonUtils.javaType(javaTypeCanonical);
+                    String objJson = JacksonUtils.toJSONString(jsonValues.get(0));
+                    Object genObj = JacksonUtils.genObjParamConstructor(javaType.getRawClass());
+                    if (null != genObj) {
+                        JacksonUtils.jsonFillObj(objJson, genObj);
+                    }
+                    result.add(genObj);
+                }
             }
         }
         return result;

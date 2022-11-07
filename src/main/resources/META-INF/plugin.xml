@@ -71,7 +71,7 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
             <add-to-group group-id="MainMenu" anchor="last"/>
 
-            <group id="Reflect.Group.Main" text="Reflect Manipulation"
+            <group id="so.Reflect.Group.Main" text="Reflect Manipulation"
                    description="Group of reflect"
                    popup="true"
                    icon="fileTypes/java.svg">
